@@ -342,6 +342,12 @@ a:hover {
   white-space: nowrap;
 }
 
+.rater-btn {
+  min-height: 36px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .menu-item {
   display: flex;
   justify-content: space-between;
@@ -856,6 +862,15 @@ a:hover {
   font-family: var(--mono);
   font-size: 14px;
   color: var(--amber);
+}
+
+.rate-others {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 12px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .flaws {

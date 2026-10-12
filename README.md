@@ -19,8 +19,12 @@ Requires Python 3.12+, Node, [uv](https://docs.astral.sh/uv/), and
 ```sh
 uv lock && uv sync
 npm install
-cp .env.example .env   # fill in the basic-auth login at least
+cp .env.example .env   # fill in the basic-auth login and the raters' names at least
 ```
+
+The curator shares one basic-auth login between its raters; `STILLSTIFT_RATERS` (comma-separated,
+e.g. `Sven,Anna`) names who is rating, picked in the header and remembered per browser. Every
+rating, favorite and the like is kept per rater, so the same page can hold one of each.
 
 ## Commands (justfile)
 

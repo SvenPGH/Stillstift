@@ -23,6 +23,7 @@
  *   reason: string,
  * }} Draft
  */
+/** @typedef {{ rater: string, taste: number, verdict: string }} OtherRating */
 /**
  * @typedef {{
  *   cell_id: string,
@@ -37,6 +38,7 @@
  *   verdict: string | null,
  *   rating: Rating | null,
  *   favorite: boolean,
+ *   others: OtherRating[],
  *   prediction: number | null,
  * }} CellView
  */
@@ -270,12 +272,16 @@ export function entryAfterDelete(entries) {
   return nextEntry(entries, "") ?? entries[0]?.entry ?? null;
 }
 
+const PICK_RATER = "Pick a rater above to rate.";
+
 /**
- * The floating button while rating a cell.
- * @param {{ cellId: string, rerate: boolean, status: SaveStatus, liked: boolean }} at
+ * The floating button while rating a cell; asks for a rater before it lets you save.
+ * @param {{ cellId: string, rerate: boolean, status: SaveStatus, liked: boolean, rater: string | null }} at
  * @returns {Button}
  */
-export function submitButton({ cellId, rerate, status, liked }) {
+export function submitButton({ cellId, rerate, status, liked, rater }) {
+  if (rater === null)
+    return { label: "Who's rating?", tone: "off", note: PICK_RATER };
   if (status === "saving")
     return { label: `Saving ${cellId}…`, tone: "saving", note: "" };
   if (status === "saved")
@@ -292,11 +298,13 @@ export function submitButton({ cellId, rerate, status, liked }) {
 }
 
 /**
- * The floating button on the grid.
- * @param {{ status: SaveStatus, favorite: boolean, next: boolean }} at
+ * The floating button on the grid; asks for a rater before it lets you save.
+ * @param {{ status: SaveStatus, favorite: boolean, next: boolean, rater: string | null }} at
  * @returns {Button}
  */
-export function favoriteButton({ status, favorite, next }) {
+export function favoriteButton({ status, favorite, next, rater }) {
+  if (rater === null)
+    return { label: "Who's rating?", tone: "off", note: PICK_RATER };
   if (status === "saving")
     return { label: "Saving…", tone: "saving", note: "" };
   if (status === "saved")
@@ -310,4 +318,16 @@ export function favoriteButton({ status, favorite, next }) {
       note: "Save failed. Favorite is kept.",
     };
   return { label: "Save favorite", tone: favorite ? "ready" : "off", note: "" };
+}
+
+/**
+ * The other configured raters' taste and verdict of a cell, small and read-only.
+ * @param {OtherRating[]} others
+ * @returns {string[]}
+ */
+export function othersLines(others) {
+  return others.map((o) => {
+    const stars = "★".repeat(o.taste) + "☆".repeat(5 - o.taste);
+    return `${o.rater} · ${stars} · ${o.verdict}`;
+  });
 }

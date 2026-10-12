@@ -7,6 +7,8 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from stillstift.kinds import Kind
 
 ROWS = ("subject", "composition", "lines", "colorability", "detail", "idea")
@@ -67,6 +69,40 @@ def verdict_of(rating: CellRating) -> Verdict:
     if rating.taste >= LIKED_FAV:
         return Verdict.FAV
     return Verdict.KEEP if wanted else Verdict.KILL
+
+
+def merge_ratings(rated: Sequence[tuple[str, CellRating]]) -> CellRating:
+    """Combine every rater's rating of one cell into one, for dashboards, exports and scoring.
+
+    Taste and render are the raters' mean, rounded to the nearest star; rows average the same
+    way, over whichever raters set them. Flaws are the union. Book, on target and reason come
+    from the first rater, by name, who set them: those don't have a sensible average.
+    """
+    ordered = sorted(rated, key=lambda item: item[0])
+    ratings = [rating for _, rating in ordered]
+    taste = round(sum(r.taste for r in ratings) / len(ratings))
+    renders = [r.render for r in ratings if r.render is not None]
+    render = round(sum(renders) / len(renders)) if renders else None
+    totals: dict[str, int] = {}
+    counts: dict[str, int] = {}
+    for r in ratings:
+        for row, stars in r.rows.items():
+            totals[row] = totals.get(row, 0) + stars
+            counts[row] = counts.get(row, 0) + 1
+    rows = {row: round(total / counts[row]) for row, total in totals.items()}
+    flaws = tuple(f for f in FLAWS if any(f in r.flaws for r in ratings))
+    book = next((r.book for r in ratings if r.book is not None), None)
+    on_target = next((r.on_target for r in ratings if r.on_target is not None), None)
+    reasons = dict.fromkeys(r.reason for r in ratings if r.reason)
+    return CellRating(
+        taste=taste,
+        rows=rows,
+        render=render,
+        flaws=flaws,
+        book=book,
+        on_target=on_target,
+        reason=" / ".join(reasons),
+    )
 
 
 @dataclass(frozen=True)

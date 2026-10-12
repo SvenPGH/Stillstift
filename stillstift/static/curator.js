@@ -13,6 +13,7 @@ import {
   isRated,
   nextEntry,
   nextUnrated,
+  othersLines,
   payload,
   submitButton,
   toggled,
@@ -88,6 +89,7 @@ const ui = {
   labBadge: byId("lab-badge", HTMLElement),
   intent: byId("intent", HTMLElement),
   stars: byId("stars", HTMLElement),
+  others: byId("others", HTMLElement),
   flaws: byId("flaws", HTMLElement),
   tri: byId("tri", HTMLElement),
   why: byId("why", HTMLTextAreaElement),
@@ -148,6 +150,19 @@ function entryUrl(entry) {
   return `/api/entries/${encodeURIComponent(entry)}`;
 }
 
+/** The picked rater, kept per browser; null until one is picked in the header menu. */
+function rater() {
+  return shell.currentRater();
+}
+
+/** @param {string} url */
+function withRater(url) {
+  const picked = rater();
+  if (picked === null) return url;
+  const join = url.includes("?") ? "&" : "?";
+  return `${url}${join}rater=${encodeURIComponent(picked)}`;
+}
+
 function summary() {
   return state.entries.find((e) => e.entry === state.entry) ?? null;
 }
@@ -182,7 +197,9 @@ function edit(change) {
 }
 
 async function loadEntries() {
-  state.entries = /** @type {EntrySummary[]} */ (await api("/api/entries"));
+  state.entries = /** @type {EntrySummary[]} */ (
+    await api(withRater("/api/entries"))
+  );
 }
 
 /** Leaving the open cell: keep its draft if it differs from its rating, else drop it. */
@@ -202,7 +219,7 @@ function stepCell(delta) {
 
 /** @param {string} entry */
 async function loadCells(entry) {
-  const url = `${entryUrl(entry)}/cells`;
+  const url = withRater(`${entryUrl(entry)}/cells`);
   state.cells = /** @type {CellView[]} */ (await api(url));
 }
 
@@ -293,12 +310,12 @@ async function refresh() {
 async function submit() {
   const cell = currentCell();
   const body = payload(state.draft);
-  if (cell === null || body === null) return;
+  if (cell === null || body === null || rater() === null) return;
   if (state.status === "saving" || state.status === "saved") return;
   state.status = "saving";
   render();
   try {
-    await api(ratingUrl(state.entry, cell.cell_id), {
+    await api(withRater(ratingUrl(state.entry, cell.cell_id)), {
       method: "POST",
       ...json(body),
     });
@@ -336,11 +353,12 @@ function advance() {
 
 async function saveFavorite() {
   const favorite = state.favorite;
-  if (favorite === null || state.gridStatus === "saving") return;
+  if (favorite === null || state.gridStatus === "saving" || rater() === null)
+    return;
   state.gridStatus = "saving";
   render();
   try {
-    await api(`${entryUrl(state.entry)}/favorite`, {
+    await api(withRater(`${entryUrl(state.entry)}/favorite`), {
       method: "PUT",
       ...json({ cell: favorite }),
     });
@@ -365,12 +383,14 @@ function onGridButton() {
 
 async function undo() {
   const last = state.history.at(-1);
-  if (last === undefined) return;
+  if (last === undefined || rater() === null) return;
   /** @type {Rating} */
   let removed;
   try {
     removed = /** @type {Rating} */ (
-      await api(ratingUrl(last.entry, last.cell), { method: "DELETE" })
+      await api(withRater(ratingUrl(last.entry, last.cell)), {
+        method: "DELETE",
+      })
     );
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
@@ -461,6 +481,13 @@ function renderImage(cell) {
 }
 
 /** @param {CellView} cell */
+function renderOthers(cell) {
+  const lines = othersLines(cell.others);
+  ui.others.replaceChildren(...lines.map((line) => el("div", "", line)));
+  ui.others.hidden = lines.length === 0;
+}
+
+/** @param {CellView} cell */
 function renderRate(cell) {
   renderImage(cell);
   renderStep();
@@ -471,6 +498,7 @@ function renderRate(cell) {
   ui.labBadge.textContent = badge;
   ui.intent.textContent = cell.intent;
   renderStars();
+  renderOthers(cell);
   ui.flaws.hidden = badge !== "";
   ui.tri.hidden = badge !== "";
   if (badge === "") {
@@ -713,7 +741,28 @@ const shell = mountShell({
   actions: ui.actions,
   page: "Curate",
   model: actionsModel,
+  onRaterChange: () => void onRaterChanged(),
+  onRatersLoaded: () => {
+    render();
+  },
 });
+
+/**
+ * Reload with the new rater's own ratings; a cross-rater undo or unsaved draft would only
+ * confuse, so both are dropped.
+ */
+async function onRaterChanged() {
+  state.history = [];
+  state.drafts = {};
+  const entry = state.entry;
+  if (entry === "") {
+    await refresh();
+    return;
+  }
+  await openEntry(entry);
+  state.drafts = {};
+  render();
+}
 
 function renderHeader() {
   renderPicker();
@@ -769,12 +818,14 @@ function floatingButton(cell) {
       rerate: isRated(cell),
       status: state.status,
       liked: state.draft.taste !== null,
+      rater: rater(),
     });
   if (state.view !== "grid" || isLab(state.entry)) return null;
   return favoriteButton({
     status: state.gridStatus,
     favorite: state.favorite !== null,
     next: nextEntry(state.entries, state.entry) !== null,
+    rater: rater(),
   });
 }
 
