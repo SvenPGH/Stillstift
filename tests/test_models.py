@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import httpx
 import pytest
 
-from stillstift.models import Manifest, ModelError, ModelFile, fetch, main
+from stillstift.models import Manifest, ModelError, ModelFile, fetch, main, with_tokens
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -76,7 +76,7 @@ def test_main_fetches_only_the_named_files(tmp_path: Path) -> None:
         " license: test, commercial_images: 'yes'}\n",
         encoding="utf-8",
     )
-    env = {"STILLSTIFT_COMFY_MODELS": str(tmp_path)}
+    env = {"STILLSTIFT_COMFY_MODELS": str(tmp_path), "STILLSTIFT_SECRETS": str(tmp_path / "none")}
     assert main(["b.safetensors", "--manifest", str(manifest)], env) == 1
     assert not (tmp_path / "loras").exists()
 
@@ -90,3 +90,20 @@ def test_the_manifest_pins_every_file_it_lets_render() -> None:
         assert f.url.startswith(("https://huggingface.co/", "https://civitai.com/")), f.name
         if f.name != "flux1-dev-fp8.safetensors":
             assert len(f.sha256) == 64, f.name
+
+
+def test_tokens_come_from_the_key_file_and_the_environment_wins(tmp_path: Path) -> None:
+    keys = tmp_path / ".env"
+    keys.write_text(
+        'STILLSTIFT_CIVITAI_TOKEN="from-file"\nSTILLSTIFT_HF_TOKEN=file-hf\nOTHER=ignored\n',
+        encoding="utf-8",
+    )
+    env = with_tokens({"STILLSTIFT_SECRETS": str(keys), "STILLSTIFT_HF_TOKEN": "from-env"})
+    tokens = (env["STILLSTIFT_CIVITAI_TOKEN"], env["STILLSTIFT_HF_TOKEN"])
+    assert tokens == ("from-file", "from-env")
+    assert "OTHER" not in env
+
+
+def test_a_missing_key_file_leaves_the_environment_as_is(tmp_path: Path) -> None:
+    env = {"STILLSTIFT_SECRETS": str(tmp_path / "absent")}
+    assert with_tokens(env) == env

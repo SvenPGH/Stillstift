@@ -56,16 +56,14 @@ files:
     commercial_images: "yes"
     checked: "2026-10-12"
 
-  # Arm B: Adult coloring (Ax) style (SDXL), trigger "ax_adult_coloring". Civitai only, so it
-  # waits for the project's own Civitai token; until then it stays commented out and the identity
-  # check expects no such file. Civitai lists its sha256 as
-  # eb7631ec287dac1b3eede16deae12563f731c65da0a56aa2c8eca4270996aa42; pin it after the download.
-  # Page: https://civitai.com/models/836929 (version 936357, V1; flags: Image, RentCivit, Rent,
-  # Sell, SellMerge)
-  # - folder: loras
-  #   name: ax-adult-coloring.safetensors
-  #   url: https://civitai.com/api/download/models/936357
-  #   sha256: ""
-  #   license: Civitai permissions (Image, RentCivit, Rent, Sell, SellMerge)
-  #   commercial_images: "yes"
-  #   checked: "2026-10-12"
+  # Arm B: Adult coloring (Ax) style (SDXL), trigger "ax_adult_coloring". Civitai only, fetched
+  # with the project's own Civitai token; the sha256 is the one Civitai lists for the file.
+  # Page: https://civitai.com/models/836929 (version 936357 "V1", file
+  # Adult_coloring_Ax_style-000008.safetensors)
+  - folder: loras
+    name: ax-adult-coloring.safetensors
+    url: https://civitai.com/api/download/models/936357
+    sha256: eb7631ec287dac1b3eede16deae12563f731c65da0a56aa2c8eca4270996aa42
+    license: Civitai permissions (Image, RentCivit, Rent, Sell, SellMerge)
+    commercial_images: "yes"
+    checked: "2026-10-12"

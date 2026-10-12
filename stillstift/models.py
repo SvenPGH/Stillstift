@@ -1,9 +1,12 @@
-"""`just models`: download the models in models.yaml into the project's ComfyUI, verified.
+r"""`just models`: download the models in models.yaml into the project's ComfyUI, verified.
 
 Every file comes from huggingface.co or civitai.com, with this project's own tokens, and is
 checked against its SHA-256 when the manifest pins one, also when it is on disk already. A file
 without a pinned hash is downloaded and its hash printed, to be pinned after its license and
 source are checked. Name files to fetch only those, e.g. while another still waits for a token.
+
+The tokens come from the environment or from the project's key file outside the repo
+(STILLSTIFT_SECRETS, D:\Stillstift\.env by default); they are sent, never printed.
 """
 
 from __future__ import annotations
@@ -27,6 +30,8 @@ if TYPE_CHECKING:
 MANIFEST = Path("models.yaml")
 MODELS_ENV = "STILLSTIFT_COMFY_MODELS"
 TOKENS = {"huggingface.co": "STILLSTIFT_HF_TOKEN", "civitai.com": "STILLSTIFT_CIVITAI_TOKEN"}
+SECRETS_ENV = "STILLSTIFT_SECRETS"
+DEFAULT_SECRETS = r"D:\Stillstift\.env"
 FOLDERS = (
     "checkpoints",
     "diffusion_models",
@@ -75,6 +80,28 @@ class Manifest(BaseModel):
         for f in self.files:
             folders[f.folder].add(f.name)
         return folders
+
+
+def with_tokens(env: Mapping[str, str]) -> dict[str, str]:
+    """Return the environment plus the download tokens from the project's key file.
+
+    The file stays outside the repo so the keys are never copied in. Only the token keys are
+    read from it, and a token already set in the environment wins.
+    """
+    path = Path(env.get(SECRETS_ENV) or DEFAULT_SECRETS)
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return dict(env)
+    except OSError as error:
+        msg = f"cannot read the key file {path}: {error.strerror}"
+        raise ModelError(msg) from None
+    found: dict[str, str] = {}
+    for line in text.splitlines():
+        key, sep, value = line.strip().removeprefix("export ").partition("=")
+        if sep and key.strip() in TOKENS.values():
+            found[key.strip()] = value.strip().strip("\"'")
+    return found | {key: value for key, value in env.items() if value}
 
 
 def _host(url: str) -> str:
@@ -162,6 +189,7 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] = os.environ)
         sys.stderr.write(f"models: set {MODELS_ENV} to the project ComfyUI's models folder\n")
         return 1
     try:
+        env = with_tokens(env)
         chosen = _chosen(Manifest.read(args.manifest), args.names)
         failed = 0
         with httpx.Client(timeout=TIMEOUT) as http:
