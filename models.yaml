@@ -13,13 +13,13 @@ files:
     commercial_images: "yes"
     checked: "2026-10-12"
 
-  # Probe arm C: FLUX.1-dev as one fp8 file. Not downloaded yet: fetch it only after the project's
-  # own Hugging Face account has accepted the FLUX.1 [dev] license. Outputs may be used
-  # commercially; the weights may not.
+  # Probe arm C: FLUX.1-dev as one fp8 file, fetched with the project's own Hugging Face account,
+  # which has accepted the FLUX.1 [dev] license. Outputs may be used commercially; the weights
+  # may not.
   - folder: checkpoints
     name: flux1-dev-fp8.safetensors
     url: https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors
-    sha256: ""
+    sha256: 8e91b68084b53a7fc44ed2a3756d821e355ac1a7b6fe29be760c1db532f3d88a
     license: FLUX.1 [dev] Non-Commercial License (outputs usable commercially)
     commercial_images: "yes"
     checked: "2026-10-12"

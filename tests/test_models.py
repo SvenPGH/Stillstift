@@ -88,8 +88,7 @@ def test_the_manifest_pins_every_file_it_lets_render() -> None:
     for f in manifest.files:
         assert f.commercial_images == "yes", f.name
         assert f.url.startswith(("https://huggingface.co/", "https://civitai.com/")), f.name
-        if f.name != "flux1-dev-fp8.safetensors":
-            assert len(f.sha256) == 64, f.name
+        assert len(f.sha256) == 64, f.name
 
 
 def test_tokens_come_from_the_key_file_and_the_environment_wins(tmp_path: Path) -> None:
