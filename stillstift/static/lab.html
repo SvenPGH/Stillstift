@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stillstift · Lab</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/curator.css" />
+    <script type="module" src="/static/lab.js"></script>
+  </head>
+  <body>
+    <header class="hdr">
+      <div class="hdr-row">
+        <div id="nav" class="nav"></div>
+        <div id="context" class="lab-context mono"></div>
+        <div class="spacer"></div>
+        <div id="actions" class="actions"></div>
+      </div>
+      <div class="filter-row">
+        <div
+          id="status-filter"
+          class="pills"
+          role="radiogroup"
+          aria-label="Status"
+        ></div>
+        <div id="shown" class="shown mono"></div>
+        <div class="spacer"></div>
+        <button id="new-set" class="btn lab-new" type="button"></button>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <p id="intro" class="lab-intro"></p>
+      <form id="create" class="lab-create" hidden>
+        <div class="lab-create-head">
+          <span id="create-id" class="lab-create-id mono"></span>
+          <span id="create-title" class="lab-create-title"></span>
+        </div>
+        <input
+          id="create-name"
+          class="lab-field lab-name"
+          aria-label="Set name"
+          placeholder="Set name"
+          autocomplete="off"
+        />
+        <textarea
+          id="create-tests"
+          class="lab-field"
+          rows="2"
+          aria-label="What it tests"
+          placeholder="What it tests"
+        ></textarea>
+        <p id="create-error" class="lab-create-error" role="alert" hidden></p>
+        <div class="lab-create-btns">
+          <button id="create-cancel" class="ghost" type="button">Cancel</button>
+          <button id="create-submit" class="lab-create-submit" type="submit">
+            Create
+          </button>
+        </div>
+      </form>
+      <div id="cards" class="cards"></div>
+      <p id="no-results" class="no-results" hidden></p>
+    </main>
+  </body>
+</html>

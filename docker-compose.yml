@@ -1,0 +1,14 @@
+services:
+  curator:
+    build: .
+    restart: unless-stopped
+    environment:
+      STILLSTIFT_AUTH_USER: ${STILLSTIFT_AUTH_USER:?set STILLSTIFT_AUTH_USER}
+      STILLSTIFT_AUTH_PASSWORD: ${STILLSTIFT_AUTH_PASSWORD:?set STILLSTIFT_AUTH_PASSWORD}
+    volumes:
+      - stillstift-data:/data
+    expose:
+      - "8765"
+
+volumes:
+  stillstift-data:

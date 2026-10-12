@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stillstift · Dashboard</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/curator.css" />
+    <script type="module" src="/static/dashboard.js"></script>
+  </head>
+  <body>
+    <header class="hdr">
+      <div class="hdr-row">
+        <div id="nav" class="nav"></div>
+        <div id="context" class="progress dash-context mono"></div>
+        <div class="spacer"></div>
+        <div id="actions" class="actions"></div>
+      </div>
+    </header>
+
+    <main class="dash-main">
+      <div id="stats" class="dash-stats"></div>
+      <div class="dash-cards">
+        <section class="dash-card">
+          <h2 class="cap">Liked</h2>
+          <div id="liked" class="dash-bars"></div>
+        </section>
+        <section class="dash-card">
+          <h2 class="cap">Verdicts</h2>
+          <div id="verdict-bar" class="verdict-bar"></div>
+          <div id="verdicts" class="dash-cols"></div>
+        </section>
+        <section class="dash-card">
+          <h2 class="cap">Top flaws</h2>
+          <div id="flaws" class="dash-bars"></div>
+        </section>
+        <section class="dash-card">
+          <h2 class="cap">Predictions</h2>
+          <div id="predictions" class="dash-cols three"></div>
+        </section>
+        <section class="dash-card">
+          <h2 class="cap">Calibration · predicted against your verdict</h2>
+          <table id="calibration" class="cal-grid"></table>
+          <ol id="misses" class="cal-misses"></ol>
+        </section>
+        <section class="dash-card">
+          <h2 class="cap">Verdict match by set</h2>
+          <div id="match" class="cal-trend"></div>
+          <div id="match-axis" class="cal-axis mono"></div>
+        </section>
+        <section class="dash-card">
+          <h2 class="cap">Average rows</h2>
+          <div id="averages" class="dash-bars"></div>
+        </section>
+      </div>
+      <section>
+        <div class="section-head">
+          <h2>By set</h2>
+          <span id="set-meta" class="mono"></span>
+        </div>
+        <div class="set-table-wrap">
+          <div
+            id="sets"
+            class="set-table"
+            role="table"
+            aria-label="By set"
+          ></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stillstift · Images</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/curator.css" />
+    <script type="module" src="/static/images.js"></script>
+  </head>
+  <body>
+    <header class="hdr">
+      <div class="hdr-row">
+        <div id="nav" class="nav"></div>
+        <div id="total" class="context mono"></div>
+        <div class="spacer"></div>
+        <div id="actions" class="actions"></div>
+      </div>
+      <div class="filter-row">
+        <div id="kind" class="pills" role="radiogroup" aria-label="Kind"></div>
+        <select id="set" class="select" aria-label="Set"></select>
+        <select id="book" class="select" aria-label="Book"></select>
+        <div
+          id="verdict"
+          class="pills"
+          role="radiogroup"
+          aria-label="Verdict"
+        ></div>
+        <select id="flaw" class="select" aria-label="Flaw"></select>
+        <select id="sort" class="select" aria-label="Sort"></select>
+        <div
+          id="layout"
+          class="pills"
+          role="radiogroup"
+          aria-label="Layout"
+        ></div>
+        <div id="shown" class="shown mono"></div>
+        <button id="clear" class="ghost" type="button" hidden>Clear</button>
+      </div>
+    </header>
+
+    <main class="overview">
+      <div id="groups" class="overview-groups"></div>
+      <p id="no-results" class="no-results" hidden>
+        Nothing matches that filter.
+      </p>
+    </main>
+
+    <div id="viewer" class="viewer" role="dialog" aria-modal="true" hidden>
+      <div class="viewer-bar">
+        <a id="viewer-rate" class="btn-link">Rate this</a>
+        <button id="viewer-close" class="viewer-close" type="button">
+          Close ✕
+        </button>
+      </div>
+      <button
+        id="viewer-prev"
+        class="lb-nav prev fixed"
+        type="button"
+        aria-label="Previous image"
+      >
+        ‹
+      </button>
+      <button
+        id="viewer-next"
+        class="lb-nav next fixed"
+        type="button"
+        aria-label="Next image"
+      >
+        ›
+      </button>
+      <div id="viewer-body" class="viewer-body stepped">
+        <div class="viewer-image-pane">
+          <div id="viewer-frame" class="frame viewer-frame">
+            <img id="viewer-image" alt="" draggable="false" />
+          </div>
+        </div>
+        <div class="viewer-meta">
+          <div id="viewer-ref" class="viewer-ref mono"></div>
+          <div id="viewer-sub" class="viewer-sub"></div>
+          <div class="viewer-liked">
+            <span class="viewer-label">Liked</span>
+            <span id="viewer-stars" class="viewer-stars"></span>
+            <span id="viewer-fav" class="fav-badge" hidden>★ favorite</span>
+          </div>
+          <div id="viewer-rows" class="viewer-rows"></div>
+          <div id="viewer-flaws" class="badges"></div>
+          <p id="viewer-reason" class="viewer-reason"></p>
+          <div id="viewer-pos" class="viewer-pos mono"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

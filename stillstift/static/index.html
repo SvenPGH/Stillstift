@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stillstift · Curate</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/curator.css" />
+    <script type="module" src="/static/curator.js"></script>
+  </head>
+  <body>
+    <header class="hdr">
+      <div class="hdr-row">
+        <div id="nav" class="nav"></div>
+        <div class="picker">
+          <button
+            id="picker"
+            class="picker-btn"
+            type="button"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+          >
+            <span id="picker-id" class="mono"></span>
+            <span id="picker-sub" class="picker-sub"></span>
+            <span class="caret" aria-hidden="true">▼</span>
+          </button>
+          <div id="picker-list" class="picker-list" role="listbox" hidden></div>
+        </div>
+        <div id="progress" class="progress mono"></div>
+        <div class="spacer"></div>
+        <div id="actions" class="actions"></div>
+      </div>
+      <div id="segments" class="segments"></div>
+      <div id="prompt" class="popover" role="dialog" aria-label="Prompt" hidden>
+        <button
+          id="prompt-close"
+          class="popover-close"
+          type="button"
+          aria-label="Close the prompt"
+        >
+          ✕
+        </button>
+        <div class="popover-grid">
+          <section>
+            <h2 class="cap">Prompt</h2>
+            <p id="prompt-text" class="mono-block"></p>
+          </section>
+          <section>
+            <h2 class="cap">Negative</h2>
+            <p id="negative-text" class="mono-block"></p>
+          </section>
+          <section>
+            <h2 class="cap">Settings</h2>
+            <dl id="settings" class="settings mono"></dl>
+          </section>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="rate" class="rate" hidden>
+        <div class="img-pane">
+          <div id="frame" class="frame">
+            <img id="image" alt="" draggable="false" />
+            <div class="img-label mono">
+              <span id="img-code" class="img-code"></span>
+              <span id="img-size"></span>
+            </div>
+          </div>
+        </div>
+        <div class="rows-pane">
+          <div class="rows-inner">
+            <button id="back" class="back" type="button" hidden>← Grid</button>
+            <div class="step-row">
+              <button
+                id="step-prev"
+                class="step-btn"
+                type="button"
+                aria-label="Previous cell"
+              >
+                ‹
+              </button>
+              <div class="step-pos">
+                <div id="step-pos" class="mono"></div>
+                <div id="step-drafts" class="step-drafts mono" hidden></div>
+              </div>
+              <button
+                id="step-next"
+                class="step-btn"
+                type="button"
+                aria-label="Next cell"
+              >
+                ›
+              </button>
+              <div class="spacer"></div>
+              <div
+                id="step-scope"
+                class="seg step-scope"
+                role="radiogroup"
+                aria-label="Step through"
+              ></div>
+            </div>
+            <div class="intent">
+              <div class="intent-head">
+                <div id="cell-code" class="mono code"></div>
+                <span id="lab-badge" class="idea" hidden></span>
+              </div>
+              <div id="intent" class="intent-line"></div>
+            </div>
+            <div id="stars" class="stars"></div>
+            <div id="flaws" class="flaws"></div>
+            <div id="tri" class="tri"></div>
+            <textarea
+              id="why"
+              class="why"
+              rows="1"
+              aria-label="Why"
+              placeholder="Why"
+            ></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section id="grid" class="grid-view" hidden>
+        <div class="grid-head">
+          <h1 id="grid-title" class="grid-title"></h1>
+          <div id="fav-text" class="fav-text mono"></div>
+        </div>
+        <div id="tiles" class="groups"></div>
+      </section>
+
+      <section id="empty" class="empty" hidden>
+        <div class="empty-frame" aria-hidden="true"></div>
+        <h1 class="empty-title">Nothing yet</h1>
+        <p id="empty-text" class="empty-text"></p>
+        <button id="empty-go" class="btn" type="button" hidden></button>
+      </section>
+    </main>
+
+    <div
+      id="lightbox"
+      class="lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Images"
+      hidden
+    >
+      <div class="lb-bar">
+        <span id="lb-title" class="lb-title mono"></span>
+        <button id="lb-rate" class="ghost" type="button">Rate this</button>
+        <button id="lb-close" class="ghost" type="button" aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div id="lb-stage" class="lb-stage"></div>
+      <button
+        id="lb-prev"
+        class="lb-nav prev"
+        type="button"
+        aria-label="Previous image"
+      >
+        ‹
+      </button>
+      <button
+        id="lb-next"
+        class="lb-nav next"
+        type="button"
+        aria-label="Next image"
+      >
+        ›
+      </button>
+    </div>
+
+    <div class="floating">
+      <div id="note" class="note" role="status" hidden></div>
+      <button id="submit" class="submit" type="button" hidden></button>
+    </div>
+  </body>
+</html>

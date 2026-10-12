@@ -1,0 +1,12 @@
+.git
+.claude
+.venv
+.env
+node_modules
+data
+tests
+register
+profiles
+workflows
+lab
+models.yaml

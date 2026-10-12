@@ -1,0 +1,16 @@
+.idea/
+.vscode/
+.DS_Store
+*.log
+node_modules/
+dist/
+build/
+coverage/
+.venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+data/
+*.safetensors
