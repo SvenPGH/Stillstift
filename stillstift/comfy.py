@@ -13,8 +13,8 @@ by their title (`_meta.title`), never by node id:
     save       SaveImage (filename_prefix)
 
 Before anything is queued, `Comfy.check_identity` refuses any ComfyUI that is not this project's
-install: its output folder must be the one configured, and its model folders must hold exactly
-the files in `models.yaml`.
+install: its output folder must be the one configured, its model folders may hold only files in
+`models.yaml`, and every file the render needs must be among them.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ import httpx
 from pydantic import BaseModel, Field, TypeAdapter, ValidationError
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping
+    from collections.abc import Callable, Iterable, Mapping
 
     from stillstift.models import Manifest
     from stillstift.store import Cell
@@ -126,6 +126,13 @@ def _inputs(graph: Graph, titles: Mapping[str, str], title: str) -> dict[str, ob
         msg = f"node {title!r} has no inputs"
         raise ComfyError(msg)
     return cast("dict[str, object]", inputs)
+
+
+def needed(profile: Profile, workflow: Workflow) -> set[tuple[str, str]]:
+    """Return the model files a render with this profile loads, as (ComfyUI folder, file name)."""
+    ckpt = _inputs(workflow.graph, _titled(workflow.graph), "ckpt")
+    folder = "diffusion_models" if "unet_name" in ckpt else "checkpoints"
+    return {(folder, profile.checkpoint)} | {("loras", lora.name) for lora in profile.loras}
 
 
 def prompt_of(cell: Cell, profile: Profile) -> str:
@@ -285,11 +292,18 @@ class Comfy:
     def close(self) -> None:
         self.http.close()
 
-    def check_identity(self, manifest: Manifest, env: Mapping[str, str] = os.environ) -> None:
-        """Refuse a ComfyUI that is not this project's install.
+    def check_identity(
+        self,
+        manifest: Manifest,
+        needs: Iterable[tuple[str, str]] = (),
+        env: Mapping[str, str] = os.environ,
+    ) -> None:
+        """Refuse a ComfyUI that is not this project's install, or that lacks a needed model.
 
-        Its launch arguments must name the configured output folder (`--output-directory`), and
-        each model folder the manifest covers must hold exactly the manifest's files.
+        Its launch arguments must name the configured output folder (`--output-directory`), each
+        model folder the manifest covers may hold only the manifest's files, and every needed
+        (folder, file) must be listed in the manifest and present. A listed file nothing needs
+        may be absent, e.g. one that still waits for its download token.
         """
         output = env.get(OUTPUT_ENV, "")
         if not output:
@@ -305,12 +319,21 @@ class Comfy:
                 f" (its --output-directory is not {output}); refusing to queue anything"
             )
             raise ComfyError(msg)
-        for folder, wanted in manifest.by_folder().items():
+        required = frozenset(needs)
+        listed = manifest.by_folder()
+        unlisted = sorted(
+            f"{folder}/{name}" for folder, name in required if name not in listed.get(folder, set())
+        )
+        if unlisted:
+            msg = f"the render needs models not in models.yaml: {', '.join(unlisted)}"
+            raise ComfyError(msg)
+        for folder, wanted in listed.items():
             held = set(self._read(f"/models/{folder}", NAMES))
-            extra, missing = sorted(held - wanted), sorted(wanted - held)
+            extra = sorted(held - wanted)
             if extra:
                 msg = f"ComfyUI's {folder} holds files not in models.yaml: {', '.join(extra)}"
                 raise ComfyError(msg)
+            missing = sorted(name for f, name in required if f == folder and name not in held)
             if missing:
                 msg = f"ComfyUI's {folder} lacks {', '.join(missing)}: run `just models`"
                 raise ComfyError(msg)

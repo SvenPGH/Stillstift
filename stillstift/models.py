@@ -1,8 +1,9 @@
 """`just models`: download the models in models.yaml into the project's ComfyUI, verified.
 
 Every file comes from huggingface.co or civitai.com, with this project's own tokens, and is
-checked against its SHA-256 when the manifest pins one. A file without a pinned hash is
-downloaded and its hash printed, to be pinned after its license and source are checked.
+checked against its SHA-256 when the manifest pins one, also when it is on disk already. A file
+without a pinned hash is downloaded and its hash printed, to be pinned after its license and
+source are checked. Name files to fetch only those, e.g. while another still waits for a token.
 """
 
 from __future__ import annotations
@@ -103,7 +104,7 @@ def fetch(model: ModelFile, root: Path, env: Mapping[str, str], http: httpx.Clie
     """Download one file unless it is there already; return its SHA-256."""
     target = root / model.folder / model.name
     if target.is_file():
-        return _sha256(target)
+        return _pinned(model, _sha256(target))
     if model.commercial_images != "yes":
         msg = f"{model.name}: its images may not be sold ({model.commercial_images}); not fetched"
         raise ModelError(msg)
@@ -123,17 +124,37 @@ def fetch(model: ModelFile, root: Path, env: Mapping[str, str], http: httpx.Clie
             out.close()
             part.unlink(missing_ok=True)
             raise
-    found = digest.hexdigest()
-    if model.sha256 and found != model.sha256.lower():
+    try:
+        found = _pinned(model, digest.hexdigest())
+    except ModelError:
         part.unlink(missing_ok=True)
-        msg = f"{model.name}: SHA-256 {found} is not the pinned {model.sha256}"
-        raise ModelError(msg)
+        raise
     part.replace(target)
     return found
 
 
+def _pinned(model: ModelFile, found: str) -> str:
+    """Return the hash found; raise when the manifest pins a different one."""
+    if model.sha256 and found != model.sha256.lower():
+        msg = f"{model.name}: SHA-256 {found} is not the pinned {model.sha256}"
+        raise ModelError(msg)
+    return found
+
+
+def _chosen(manifest: Manifest, names: Sequence[str]) -> list[ModelFile]:
+    """Return the manifest's files, or only those named; refuse a name it lacks."""
+    if not names:
+        return manifest.files
+    unknown = sorted(set(names) - {f.name for f in manifest.files})
+    if unknown:
+        msg = f"not in the manifest: {', '.join(unknown)}"
+        raise ModelError(msg)
+    return [f for f in manifest.files if f.name in names]
+
+
 def main(argv: Sequence[str] | None = None, env: Mapping[str, str] = os.environ) -> int:
     parser = argparse.ArgumentParser(prog="just models", description=__doc__)
+    parser.add_argument("names", nargs="*", help="only these files (by name); all by default")
     parser.add_argument("--manifest", type=Path, default=MANIFEST)
     args = parser.parse_args(argv)
     root = env.get(MODELS_ENV, "")
@@ -141,10 +162,10 @@ def main(argv: Sequence[str] | None = None, env: Mapping[str, str] = os.environ)
         sys.stderr.write(f"models: set {MODELS_ENV} to the project ComfyUI's models folder\n")
         return 1
     try:
-        manifest = Manifest.read(args.manifest)
+        chosen = _chosen(Manifest.read(args.manifest), args.names)
         failed = 0
         with httpx.Client(timeout=TIMEOUT) as http:
-            for model in manifest.files:
+            for model in chosen:
                 try:
                     found = fetch(model, Path(root), env, http)
                 except (ModelError, httpx.HTTPError, OSError) as error:
