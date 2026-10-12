@@ -53,6 +53,7 @@ from stillstift.register import (
 )
 from stillstift.store import (
     DEFAULT_PATH,
+    RATERS_ENV,
     Cell,
     CellVerdict,
     Prediction,
@@ -61,6 +62,7 @@ from stillstift.store import (
     SheetCell,
     Source,
     Store,
+    raters_from_env,
 )
 from stillstift.webp import thumb_of
 
@@ -262,8 +264,20 @@ class FavoriteBody(BaseModel):
     cell: str | None
 
 
+class OtherRating(BaseModel):
+    """Another rater's own taste and verdict of a cell, shown small and read-only."""
+
+    rater: str
+    taste: Stars
+    verdict: Verdict
+
+
 class CellView(BaseModel):
-    """A rendered cell as the rating page sees it: its prediction only once it is rated."""
+    """A rendered cell as the rating page sees it: its prediction only once it is rated.
+
+    `rating` and `verdict` are the picked rater's own; `others` is every other configured
+    rater's taste and verdict, for the cells they have rated.
+    """
 
     cell_id: str
     image: str
@@ -277,6 +291,7 @@ class CellView(BaseModel):
     verdict: Verdict | None
     rating: RatingBody | None
     favorite: bool
+    others: list[OtherRating] = Field(default_factory=list[OtherRating])
     prediction: Verdict | None = None
 
 
@@ -446,10 +461,37 @@ def _download(cell: Cell) -> str:
     return f"{cell.entry}-{cell.cell_id}{suffix}"
 
 
-def _cell_views(store: Store, entry: str) -> list[CellView]:
-    """Every rendered cell of the set in cell order, with its latest rating and settings."""
-    judged = {v.cell_id: v for v in store.verdicts(entry)}
-    favorite = store.favorite(entry)
+def _others(
+    store: Store, entry: str, raters: Sequence[str], rater: str | None
+) -> dict[str, list[OtherRating]]:
+    """Every configured rater but `rater`'s own rating of the set's cells, by cell id.
+
+    Cheap because there are only a few raters: one extra query per other rater.
+    """
+    others: dict[str, list[OtherRating]] = {}
+    for name in raters:
+        if name == rater:
+            continue
+        for v in store.verdicts(entry, rater=name):
+            if v.rating is None:
+                continue
+            others.setdefault(v.cell_id, []).append(
+                OtherRating(rater=name, taste=v.rating.taste, verdict=v.verdict)
+            )
+    return others
+
+
+def _cell_views(
+    store: Store, entry: str, raters: Sequence[str], rater: str | None
+) -> list[CellView]:
+    """Every rendered cell of the set in cell order, with `rater`'s own rating and settings.
+
+    `rater` is None before a rater is picked: no own rating, and every configured rater shows
+    as an "other".
+    """
+    judged = {} if rater is None else {v.cell_id: v for v in store.verdicts(entry, rater=rater)}
+    favorite = None if rater is None else store.favorite(entry, rater)
+    others = _others(store, entry, raters, rater)
     views: list[CellView] = []
     for c in store.cells(entry):
         if c.rendered_at is None:
@@ -469,6 +511,7 @@ def _cell_views(store: Store, entry: str) -> list[CellView]:
                 verdict=None if found is None or found.rating is not None else found.verdict,
                 rating=_rating_of(found),
                 favorite=c.cell_id == favorite,
+                others=others.get(c.cell_id, []),
                 prediction=None if found is None else c.prediction,
             )
         )
@@ -476,9 +519,12 @@ def _cell_views(store: Store, entry: str) -> list[CellView]:
 
 
 def _cell_rows(store: Store) -> list[CellRow]:
-    """Every rendered cell of every set, newest set first, with its rating."""
+    """Every rendered cell of every set, newest set first, with its merged rating.
+
+    Merged over every rater who has rated it; see `Store.verdicts`.
+    """
     judged = {(v.entry, v.cell_id): v for v in store.verdicts()}
-    favorites = store.favorites()
+    favorites = store.favorites_any()
     rows: list[CellRow] = []
     for c in store.rendered_cells():
         if c.rendered_at is None:
@@ -535,7 +581,7 @@ def _export_entry(store: Store, entry: str) -> EntryExport:
                 rating=_rating_of(found),
             )
         )
-    return EntryExport(entry=entry, cells=exported, favorite=store.favorite(entry))
+    return EntryExport(entry=entry, cells=exported, favorite=store.favorite_any(entry))
 
 
 def _image_file(store: Store, entry: str, cell_id: str, request: Request) -> Response:
@@ -595,7 +641,7 @@ def _utc_now() -> datetime:
 
 
 def _open_store(request: Request) -> Iterator[Store]:
-    store = Store.open(request.app.state.db)
+    store = Store.open(request.app.state.db, request.app.state.raters)
     try:
         yield store
     finally:
@@ -603,6 +649,28 @@ def _open_store(request: Request) -> Iterator[Store]:
 
 
 StoreDep = Annotated[Store, Depends(_open_store)]
+
+
+def _optional_rater(request: Request, rater: str | None = None) -> str | None:
+    """Read the `rater` query param, checked against STILLSTIFT_RATERS; None when not given."""
+    if rater is not None and rater not in request.app.state.raters:
+        msg = f"unknown rater: {rater}"
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, msg)
+    return rater
+
+
+OptionalRaterDep = Annotated[str | None, Depends(_optional_rater)]
+
+
+def _required_rater(rater: OptionalRaterDep) -> str:
+    """Require the `rater` query param: a write must know who is rating."""
+    if rater is None:
+        msg = "a rater is required"
+        raise _bad_request(msg)
+    return rater
+
+
+RaterDep = Annotated[str, Depends(_required_rater)]
 
 
 def _register_upload(store: Store, form: Upload, renders: Path, rendered_at: datetime) -> UploadOut:
@@ -645,21 +713,23 @@ def _add_export_routes(app: FastAPI) -> None:
 
 def _add_rating_routes(app: FastAPI, now: Callable[[], datetime]) -> None:
     @app.post("/api/entries/{entry}/cells/{cell_id}/rating", status_code=204)
-    def rate(entry: str, cell_id: str, body: RatingBody, store: StoreDep) -> Response:
+    def rate(
+        entry: str, cell_id: str, body: RatingBody, store: StoreDep, rater: RaterDep
+    ) -> Response:
         rating = body.rating()
         extra = misfits(kind_of(entry), rating)
         if extra:
             msg = f"{entry} takes no {', '.join(extra)}"
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, msg)
         try:
-            store.rate_cell(entry, cell_id, rating, now())
+            store.rate_cell(entry, cell_id, rater, rating, now())
         except KeyError:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "unknown cell") from None
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     @app.delete("/api/entries/{entry}/cells/{cell_id}/rating")
-    def undo(entry: str, cell_id: str, store: StoreDep) -> RatingBody:
-        removed = store.unrate(entry, cell_id)
+    def undo(entry: str, cell_id: str, store: StoreDep, rater: RaterDep) -> RatingBody:
+        removed = store.unrate(entry, cell_id, rater)
         if removed is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "nothing to undo")
         return RatingBody.of(removed)
@@ -671,12 +741,12 @@ def _add_rating_routes(app: FastAPI, now: Callable[[], datetime]) -> None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     @app.put("/api/entries/{entry}/favorite", status_code=204)
-    def favorite(entry: str, body: FavoriteBody, store: StoreDep) -> Response:
+    def favorite(entry: str, body: FavoriteBody, store: StoreDep, rater: RaterDep) -> Response:
         if is_lab(entry):
             msg = f"{entry} is a lab set: it has no favorite"
             raise _bad_request(msg)
         try:
-            store.set_favorite(entry, body.cell, now())
+            store.set_favorite(entry, rater, body.cell, now())
         except KeyError:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "unknown cell") from None
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -711,9 +781,11 @@ def create_app(
     now: Callable[[], datetime] = _utc_now,
     credentials: Credentials | None = None,
     renders: Path = RENDERS,
+    raters: tuple[str, ...] = (),
 ) -> FastAPI:
     app = FastAPI(title="Stillstift curator")
     app.state.db = db
+    app.state.raters = raters
     if credentials is not None:
         app.add_middleware(BasicAuth, credentials=credentials)
     _add_upload_route(app, renders, now)
@@ -728,8 +800,12 @@ def create_app(
     def changes(store: StoreDep) -> Changes:
         return Changes(stamp=store.stamp())
 
+    @app.get("/api/raters")
+    def raters_route(request: Request) -> list[str]:
+        return list(request.app.state.raters)
+
     @app.get("/api/entries")
-    def entries(store: StoreDep) -> list[EntrySummary]:
+    def entries(store: StoreDep, rater: OptionalRaterDep) -> list[EntrySummary]:
         return [
             EntrySummary(
                 entry=c.entry,
@@ -741,7 +817,7 @@ def create_app(
                 unrated=c.unrated,
                 cells=c.cells,
             )
-            for c in store.entry_counts()
+            for c in store.entry_counts(rater)
         ]
 
     @app.get("/api/cells")
@@ -749,8 +825,10 @@ def create_app(
         return _cell_rows(store)
 
     @app.get("/api/entries/{entry}/cells")
-    def cells(entry: str, store: StoreDep) -> list[CellView]:
-        return _cell_views(store, entry)
+    def cells(
+        entry: str, store: StoreDep, request: Request, rater: OptionalRaterDep
+    ) -> list[CellView]:
+        return _cell_views(store, entry, request.app.state.raters, rater)
 
     @app.get("/api/entries/{entry}/cells/{cell_id}/image")
     def image(entry: str, cell_id: str, store: StoreDep, request: Request) -> Response:
@@ -995,7 +1073,10 @@ def main(argv: Sequence[str] | None = None) -> None:
         parser.error(str(error))
     if credentials is None and args.host not in LOOPBACK:
         parser.error(f"refusing to listen on {args.host} without {AUTH_ENV[0]} and {AUTH_ENV[1]}")
-    uvicorn.run(create_app(credentials=credentials), host=args.host, port=args.port)
+    raters = raters_from_env()
+    if not raters:
+        parser.error(f"set {RATERS_ENV} to who is rating, comma-separated")
+    uvicorn.run(create_app(credentials=credentials, raters=raters), host=args.host, port=args.port)
 
 
 if __name__ == "__main__":

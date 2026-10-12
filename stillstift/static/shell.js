@@ -1,5 +1,6 @@
-import { button, el } from "./dom.js";
+import { api, button, el } from "./dom.js";
 import { litDot, pageForKey, pageGroups } from "./nav.js";
+import { mountRaterPicker, saveRater, savedRater } from "./raters.js";
 import { applySavedTheme, mountThemeToggle } from "./theme.js";
 
 /** @typedef {import("./nav.js").PageName} PageName */
@@ -84,13 +85,23 @@ function menuItem(action, close) {
 }
 
 /**
- * The Actions menu: the theme and any page-wide actions, then the page's own items.
+ * The Actions menu: who's rating, the theme and any page-wide actions, then the page's items.
  * @param {HTMLElement} host
  * @param {PageName} page
  * @param {{ open: boolean }} state
- * @param {{ model: ActionsModel, rerender: () => void }} at
+ * @param {{
+ *   model: ActionsModel,
+ *   rerender: () => void,
+ *   raters: readonly string[],
+ *   onRaterChange?: ((rater: string) => void) | undefined,
+ * }} at
  */
-function renderActions(host, page, state, { model, rerender }) {
+function renderActions(
+  host,
+  page,
+  state,
+  { model, rerender, raters, onRaterChange },
+) {
   const toggle = button("actions-btn", "Actions", () => {
     state.open = !state.open;
     rerender();
@@ -106,13 +117,32 @@ function renderActions(host, page, state, { model, rerender }) {
   };
   const list = el("div", "actions-list");
   list.role = "menu";
+  list.append(el("div", "menu-cap", "General"));
+  if (raters.length > 0) {
+    const group = el("div", "seg");
+    group.role = "radiogroup";
+    group.ariaLabel = "Who's rating?";
+    mountRaterPicker(
+      group,
+      raters,
+      savedRater(localStorage, raters),
+      (rater) => {
+        saveRater(localStorage, rater);
+        onRaterChange?.(rater);
+        rerender();
+      },
+    );
+    const raterRow = el("div", "menu-theme");
+    raterRow.append(el("span", "", "Who's rating?"), group);
+    list.append(raterRow);
+  }
   const theme = el("div", "seg");
   theme.role = "radiogroup";
   theme.ariaLabel = "Theme";
   mountThemeToggle(theme);
   const themeRow = el("div", "menu-theme");
   themeRow.append(el("span", "", "Theme"), theme);
-  list.append(el("div", "menu-cap", "General"), themeRow);
+  list.append(themeRow);
   list.append(...model.general.map((a) => menuItem(a, close)));
   if (model.items.length > 0) {
     list.append(el("div", "menu-sep"), el("div", "menu-cap", page));
@@ -127,20 +157,48 @@ function renderActions(host, page, state, { model, rerender }) {
 
 /**
  * Mount the page menu and the Actions menu; the page calls `render` whenever its state changes.
- * @param {{ nav: HTMLElement, actions: HTMLElement, page: PageName, model: () => ActionsModel }} at
- * @returns {{ render: () => void }}
+ * @param {{
+ *   nav: HTMLElement,
+ *   actions: HTMLElement,
+ *   page: PageName,
+ *   model: () => ActionsModel,
+ *   onRaterChange?: (rater: string) => void,
+ *   onRatersLoaded?: () => void,
+ * }} at
+ * @returns {{ render: () => void, currentRater: () => string | null }}
  */
-export function mountShell({ nav, actions, page, model }) {
+export function mountShell({
+  nav,
+  actions,
+  page,
+  model,
+  onRaterChange,
+  onRatersLoaded,
+}) {
   applySavedTheme();
   const navState = { open: false };
   const actionsState = { open: false };
+  /** @type {{ raters: readonly string[] }} */
+  const raterState = { raters: [] };
   const render = () => {
     renderNav(nav, page, navState, render);
     renderActions(actions, page, actionsState, {
       model: model(),
       rerender: render,
+      raters: raterState.raters,
+      onRaterChange,
     });
   };
+  async function loadRaters() {
+    try {
+      raterState.raters = /** @type {string[]} */ (await api("/api/raters"));
+    } catch {
+      raterState.raters = [];
+    }
+    render();
+    onRatersLoaded?.();
+  }
+  void loadRaters();
   document.addEventListener(
     "click",
     (event) => {
@@ -165,5 +223,8 @@ export function mountShell({ nav, actions, page, model }) {
     if (href !== null) location.href = href;
   });
   render();
-  return { render };
+  return {
+    render,
+    currentRater: () => savedRater(localStorage, raterState.raters),
+  };
 }

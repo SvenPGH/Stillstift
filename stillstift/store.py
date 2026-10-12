@@ -12,12 +12,13 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol, Self, cast
 
 from stillstift.kinds import Kind, kind_of, next_id
-from stillstift.ratings import CellRating, Flag, OnTarget, Verdict, verdict_of
+from stillstift.ratings import CellRating, Flag, OnTarget, Verdict, merge_ratings, verdict_of
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
 
 DATA_ENV = "STILLSTIFT_DATA"
+RATERS_ENV = "STILLSTIFT_RATERS"
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS cells (
@@ -41,6 +42,7 @@ CREATE TABLE IF NOT EXISTS ratings (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
     entry     TEXT NOT NULL,
     cell_id   TEXT NOT NULL,
+    rater     TEXT NOT NULL,
     taste     INTEGER NOT NULL,
     rows      TEXT NOT NULL,
     render    INTEGER,
@@ -51,11 +53,12 @@ CREATE TABLE IF NOT EXISTS ratings (
     rated_at  TEXT NOT NULL,
     FOREIGN KEY (entry, cell_id) REFERENCES cells (entry, cell_id)
 );
-CREATE INDEX IF NOT EXISTS ratings_latest ON ratings (entry, cell_id, id);
 CREATE TABLE IF NOT EXISTS favorites (
-    entry   TEXT PRIMARY KEY,
+    entry   TEXT NOT NULL,
+    rater   TEXT NOT NULL,
     cell_id TEXT NOT NULL,
-    set_at  TEXT NOT NULL
+    set_at  TEXT NOT NULL,
+    PRIMARY KEY (entry, rater)
 );
 CREATE TABLE IF NOT EXISTS sets (
     entry TEXT PRIMARY KEY,
@@ -63,6 +66,11 @@ CREATE TABLE IF NOT EXISTS sets (
     date  TEXT NOT NULL DEFAULT '',
     tests TEXT NOT NULL DEFAULT ''
 );
+"""
+# A rater's latest rating or favorite of a cell is its highest id or set_at; both tables are
+# keyed by (entry, cell_id, rater) for that reason, once INDEXES below is in place.
+INDEXES = """
+CREATE INDEX IF NOT EXISTS ratings_latest ON ratings (entry, cell_id, rater, id);
 """
 # Every write to a watched table moves the change stamp, so open pages know to refresh.
 STAMP = """
@@ -98,6 +106,11 @@ CREATE TRIGGER IF NOT EXISTS stamp_sets_delete AFTER DELETE ON sets
 def data_dir(env: Mapping[str, str] = os.environ) -> Path:
     """Return the folder of the SQLite file, renders and sheets: $STILLSTIFT_DATA, else data."""
     return Path(env.get(DATA_ENV, "data"))
+
+
+def raters_from_env(env: Mapping[str, str] = os.environ) -> tuple[str, ...]:
+    """Return the configured raters from STILLSTIFT_RATERS, comma-separated; empty when unset."""
+    return tuple(name.strip() for name in env.get(RATERS_ENV, "").split(",") if name.strip())
 
 
 DEFAULT_PATH = data_dir() / "curator.sqlite"
@@ -211,12 +224,19 @@ class Store:
         self._db = db
 
     @classmethod
-    def open(cls, path: Path = DEFAULT_PATH) -> Self:
+    def open(cls, path: Path = DEFAULT_PATH, raters: tuple[str, ...] | None = None) -> Self:
+        """Open the store, adding the `rater` column kept by a store from before raters existed.
+
+        `raters` names the rater a store like that puts every existing row under (its first);
+        $STILLSTIFT_RATERS when not given. A fresh store needs neither.
+        """
         path.parent.mkdir(parents=True, exist_ok=True)
         # One connection per request, used in sequence, but FastAPI moves it between threads.
         db = sqlite3.connect(path, check_same_thread=False)
         db.execute("PRAGMA foreign_keys = ON")
         db.executescript(SCHEMA)
+        _migrate_raters(db, raters_from_env() if raters is None else raters)
+        db.executescript(INDEXES)
         db.executescript(STAMP)
         return cls(db)
 
@@ -260,9 +280,10 @@ class Store:
                 ],
             )
 
-    def entry_counts(self) -> list[EntryCounts]:
+    def entry_counts(self, rater: str | None = None) -> list[EntryCounts]:
         """Per set, newest first: its rendered cells, those not rated yet and all its cells.
 
+        `unrated` counts against `rater`'s own ratings when given, else against anyone's.
         Each with its name and date: the index's, else the day of its first render.
         """
         rows = self._db.execute(
@@ -274,7 +295,9 @@ class Store:
                        count(*) AS cells,
                        substr(min(c.rendered_at), 1, 10) AS first
                 FROM cells c
-                LEFT JOIN (SELECT DISTINCT entry, cell_id FROM ratings) r USING (entry, cell_id)
+                LEFT JOIN (
+                    SELECT DISTINCT entry, cell_id FROM ratings WHERE ? IS NULL OR rater = ?
+                ) r USING (entry, cell_id)
                 GROUP BY c.entry
             )
             SELECT e.entry, coalesce(k.rendered, 0), coalesce(k.unrated, 0), coalesce(k.cells, 0),
@@ -284,7 +307,8 @@ class Store:
                   SELECT entry FROM sets WHERE entry GLOB 'X[0-9]*' OR entry GLOB 'T[0-9]*') e
             LEFT JOIN counted k USING (entry)
             LEFT JOIN sets s USING (entry)
-            """
+            """,
+            (rater, rater),
         )
         counts = [
             EntryCounts(str(e), int(rendered), int(unrated), int(cells), str(n), str(d), str(t))
@@ -407,32 +431,35 @@ class Store:
             self._db.execute("DELETE FROM sets WHERE entry = ?", (entry,))
         return [c.image_path for c in cells if c.image_path is not None]
 
-    def rate_cell(self, entry: str, cell_id: str, rating: CellRating, rated_at: datetime) -> None:
+    def rate_cell(
+        self, entry: str, cell_id: str, rater: str, rating: CellRating, rated_at: datetime
+    ) -> None:
         self._require(entry, cell_id)
         with self._db:
             self._db.execute(
                 """
-                INSERT INTO ratings (entry, cell_id, taste, rows, render, flaws, book, on_target,
-                                     reason, rated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO ratings (entry, cell_id, rater, taste, rows, render, flaws, book,
+                                     on_target, reason, rated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (entry, cell_id, *_rating_values(rating), rated_at.isoformat()),
+                (entry, cell_id, rater, *_rating_values(rating), rated_at.isoformat()),
             )
 
-    def rating(self, entry: str, cell_id: str) -> StoredRating | None:
+    def rating(self, entry: str, cell_id: str, rater: str) -> StoredRating | None:
+        """Return the rater's own latest rating of the cell; None when they haven't rated it."""
         row = self._db.execute(
-            "SELECT taste, rows, render, flaws, book, on_target, reason, rated_at"
-            " FROM ratings WHERE entry = ? AND cell_id = ? ORDER BY id DESC LIMIT 1",
-            (entry, cell_id),
+            "SELECT taste, rows, render, flaws, book, on_target, reason, rated_at FROM ratings"
+            " WHERE entry = ? AND cell_id = ? AND rater = ? ORDER BY id DESC LIMIT 1",
+            (entry, cell_id, rater),
         ).fetchone()
         return None if row is None else _stored(row)
 
-    def unrate(self, entry: str, cell_id: str) -> CellRating | None:
-        """Delete the cell's latest rating and return it; the one before, if any, counts again."""
+    def unrate(self, entry: str, cell_id: str, rater: str) -> CellRating | None:
+        """Delete the rater's latest rating and return it; the one before, if any, counts again."""
         row = self._db.execute(
             "SELECT id, taste, rows, render, flaws, book, on_target, reason, rated_at"
-            " FROM ratings WHERE entry = ? AND cell_id = ? ORDER BY id DESC LIMIT 1",
-            (entry, cell_id),
+            " FROM ratings WHERE entry = ? AND cell_id = ? AND rater = ? ORDER BY id DESC LIMIT 1",
+            (entry, cell_id, rater),
         ).fetchone()
         if row is None:
             return None
@@ -440,35 +467,59 @@ class Store:
             self._db.execute("DELETE FROM ratings WHERE id = ?", (row[0],))
         return _stored(row[1:]).rating
 
-    def favorites(self) -> dict[str, str]:
-        """Every set's favorite cell, by set."""
-        return {
-            str(r[0]): str(r[1]) for r in self._db.execute("SELECT entry, cell_id FROM favorites")
-        }
+    def favorites(self, rater: str) -> dict[str, str]:
+        """Return the rater's own favorite cell of every set, by set."""
+        rows = self._db.execute("SELECT entry, cell_id FROM favorites WHERE rater = ?", (rater,))
+        return {str(r[0]): str(r[1]) for r in rows}
 
-    def favorite(self, entry: str) -> str | None:
-        row = self._db.execute("SELECT cell_id FROM favorites WHERE entry = ?", (entry,)).fetchone()
+    def favorites_any(self) -> dict[str, str]:
+        """Every set's favorite cell, by set: the most recently set among its raters."""
+        rows = self._db.execute(
+            """
+            SELECT entry, cell_id FROM favorites f
+            WHERE set_at = (SELECT max(set_at) FROM favorites s WHERE s.entry = f.entry)
+            """
+        )
+        return {str(r[0]): str(r[1]) for r in rows}
+
+    def favorite(self, entry: str, rater: str) -> str | None:
+        row = self._db.execute(
+            "SELECT cell_id FROM favorites WHERE entry = ? AND rater = ?", (entry, rater)
+        ).fetchone()
         return None if row is None else str(row[0])
 
-    def set_favorite(self, entry: str, cell_id: str | None, set_at: datetime) -> None:
-        """Make the cell the set's one favorite; None clears it."""
+    def favorite_any(self, entry: str) -> str | None:
+        """Return the set's favorite cell, the one its raters set most recently; else None."""
+        row = self._db.execute(
+            "SELECT cell_id FROM favorites WHERE entry = ? ORDER BY set_at DESC LIMIT 1",
+            (entry,),
+        ).fetchone()
+        return None if row is None else str(row[0])
+
+    def set_favorite(self, entry: str, rater: str, cell_id: str | None, set_at: datetime) -> None:
+        """Make the cell the rater's one favorite of the set; None clears it."""
         if cell_id is None:
             with self._db:
-                self._db.execute("DELETE FROM favorites WHERE entry = ?", (entry,))
+                self._db.execute(
+                    "DELETE FROM favorites WHERE entry = ? AND rater = ?", (entry, rater)
+                )
             return
         self._require(entry, cell_id)
         with self._db:
             self._db.execute(
                 """
-                INSERT INTO favorites (entry, cell_id, set_at) VALUES (?, ?, ?)
-                ON CONFLICT (entry) DO UPDATE SET cell_id = excluded.cell_id,
-                                                  set_at = excluded.set_at
+                INSERT INTO favorites (entry, rater, cell_id, set_at) VALUES (?, ?, ?, ?)
+                ON CONFLICT (entry, rater) DO UPDATE SET cell_id = excluded.cell_id,
+                                                          set_at = excluded.set_at
                 """,
-                (entry, cell_id, set_at.isoformat()),
+                (entry, rater, cell_id, set_at.isoformat()),
             )
 
     def scored_cells(self, entry: str | None = None) -> list[ScoredCell]:
-        """Predicted page cells with a rating, oldest rating first, paired with the prediction."""
+        """Predicted page cells with a rating, oldest rating first, paired with the prediction.
+
+        Each cell's rating merges every rater who has rated it; see `merge_ratings`.
+        """
         rows = self._db.execute(
             "SELECT entry, cell_id, prediction FROM cells"
             " WHERE prediction IS NOT NULL AND (? IS NULL OR entry = ?)",
@@ -490,31 +541,44 @@ class Store:
             if (v.entry, v.cell_id) in predictions and kind_of(v.entry) == "P"
         ]
 
-    def verdicts(self, entry: str | None = None) -> list[CellVerdict]:
-        """Every rated cell's latest rating and its verdict, oldest first."""
+    def verdicts(self, entry: str | None = None, rater: str | None = None) -> list[CellVerdict]:
+        """Every rated cell's latest rating and its verdict, oldest first.
+
+        `rater`'s own ratings when given; otherwise every rater's latest rating of each cell is
+        merged into one, by `merge_ratings`.
+        """
         rows = self._db.execute(
             """
-            SELECT r.entry, r.cell_id, r.taste, r.rows, r.render, r.flaws, r.book, r.on_target,
-                   r.reason, r.rated_at
+            SELECT r.entry, r.cell_id, r.rater, r.taste, r.rows, r.render, r.flaws, r.book,
+                   r.on_target, r.reason, r.rated_at
             FROM ratings r
             WHERE r.id = (SELECT max(id) FROM ratings s
-                          WHERE s.entry = r.entry AND s.cell_id = r.cell_id)
+                          WHERE s.entry = r.entry AND s.cell_id = r.cell_id AND s.rater = r.rater)
               AND (? IS NULL OR r.entry = ?)
+              AND (? IS NULL OR r.rater = ?)
             """,
-            (entry, entry),
+            (entry, entry, rater, rater),
         )
-        favorites = self.favorites()
-        latest: list[CellVerdict] = []
+        by_cell: dict[tuple[str, str], list[tuple[str, StoredRating]]] = {}
         for row in rows:
-            entry_id, cell_id, stored = str(row[0]), str(row[1]), _stored(row[2:])
-            rating = stored.rating
+            key = (str(row[0]), str(row[1]))
+            by_cell.setdefault(key, []).append((str(row[2]), _stored(row[3:])))
+        favorites = self.favorites(rater) if rater is not None else self.favorites_any()
+        latest: list[CellVerdict] = []
+        for (entry_id, cell_id), rated in by_cell.items():
+            rating = (
+                rated[0][1].rating
+                if rater is not None
+                else merge_ratings([(name, stored.rating) for name, stored in rated])
+            )
+            rated_at = max(stored.rated_at for _, stored in rated)
             latest.append(
                 CellVerdict(
                     entry_id,
                     cell_id,
                     verdict_of(rating),
                     rating.reason,
-                    stored.rated_at,
+                    rated_at,
                     rating,
                     favorites.get(entry_id) == cell_id,
                 )
@@ -540,6 +604,44 @@ class Store:
         ).fetchone()
         if found is None:
             raise KeyError((entry, cell_id))
+
+
+def _migrate_raters(db: sqlite3.Connection, raters: Sequence[str]) -> None:
+    """Add `rater` to `ratings` and `favorites` kept by a store from before raters existed.
+
+    Every existing row goes under `raters[0]`; a fresh store already has the column, from
+    SCHEMA, and is left alone.
+    """
+    columns = {str(row[1]) for row in db.execute("PRAGMA table_info(ratings)")}
+    if "rater" in columns:
+        return
+    if not raters:
+        msg = f"set {RATERS_ENV} before opening a store with ratings from before raters existed"
+        raise ValueError(msg)
+    first = raters[0]
+    with db:
+        # Its name stays, so DROP it first: otherwise INDEXES later leaves its old columns in
+        # place, CREATE INDEX IF NOT EXISTS being keyed on the name alone.
+        db.execute("DROP INDEX IF EXISTS ratings_latest")
+        db.execute("ALTER TABLE ratings ADD COLUMN rater TEXT NOT NULL DEFAULT ''")
+        db.execute("UPDATE ratings SET rater = ?", (first,))
+        db.executescript(
+            """
+            CREATE TABLE favorites_new (
+                entry   TEXT NOT NULL,
+                rater   TEXT NOT NULL,
+                cell_id TEXT NOT NULL,
+                set_at  TEXT NOT NULL,
+                PRIMARY KEY (entry, rater)
+            )
+            """
+        )
+        db.execute(
+            "INSERT INTO favorites_new (entry, rater, cell_id, set_at)"
+            " SELECT entry, ?, cell_id, set_at FROM favorites",
+            (first,),
+        )
+        db.executescript("DROP TABLE favorites; ALTER TABLE favorites_new RENAME TO favorites")
 
 
 def _cell(row: tuple[object, ...]) -> Cell:
