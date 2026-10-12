@@ -32,8 +32,9 @@ rating, favorite and the like is kept per rater, so the same page can hold one o
 |---|---|
 | `just gates` | format, lint, type-check and test both languages; must pass before a push |
 | `just curate` | run the rating app locally at `http://127.0.0.1:8765` |
+| `just comfy` | start the project's own ComfyUI (`scripts/comfy.ps1`) on 127.0.0.1:8189 |
 | `just render <entry> [...]` | render a set's cells on the project's ComfyUI |
-| `just models [...]` | download the models in `models.yaml` into the project's ComfyUI |
+| `just models [name ...]` | download the models in `models.yaml` (or only those named) into the project's ComfyUI |
 | `just lab <kind> <name> ...` | create an experiment (`X`) or a test (`T`) set |
 | `just score <entry>` | write a set's ratings to `register/predictions.csv`, print recall |
 | `just sheet <entry>` | one labelled contact sheet of a set's cells |

@@ -10,7 +10,7 @@ interior PDF for Amazon KDP (A4). See `README.md` for the module map and setup.
   `prettier`, `eslint`, `tsc`, `pytest`, `vitest`).
 - `just format`, `just lint`, `just types`, `just test` — run one gate at a time.
 - `just curate` — run the rating app locally.
-- `just render`, `just models`, `just lab`, `just score`, `just sheet` — see `README.md`.
+- `just comfy`, `just render`, `just models`, `just lab`, `just score`, `just sheet` — see `README.md`.
 
 Run the relevant gate after any change before calling it done; don't weaken `ruff.toml`,
 `pyrightconfig.json`, `tsconfig.json` or `eslint.config.js` to make a failure go away — fix the

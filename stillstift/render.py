@@ -15,7 +15,16 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
-from stillstift.comfy import Comfy, ComfyError, Profile, Workflow, fill, infotext, load_profile
+from stillstift.comfy import (
+    Comfy,
+    ComfyError,
+    Profile,
+    Workflow,
+    fill,
+    infotext,
+    load_profile,
+    needed,
+)
 from stillstift.curator import CuratorClient, CuratorError
 from stillstift.kinds import cell_arg, is_lab
 from stillstift.models import Manifest, ModelError
@@ -215,7 +224,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
         with ExitStack() as stack:
             comfy = stack.enter_context(closing(Comfy.connect()))
-            comfy.check_identity(Manifest.read())
+            needs = set[tuple[str, str]]().union(*(needed(j.profile, j.workflow) for j in jobs))
+            comfy.check_identity(Manifest.read(), needs)
             failed = run(comfy, _destination(stack), args.entry, jobs, replace=args.replace)
     except (ComfyError, CuratorError, RegisterError, ModelError, OSError) as error:
         sys.stderr.write(f"render: {error}\n")

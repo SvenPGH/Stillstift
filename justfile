@@ -1,6 +1,9 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 set dotenv-load
 
+# The CLIs print "→" and "·"; without UTF-8 mode, Python on a Windows console crashes on them.
+export PYTHONUTF8 := "1"
+
 # Format, lint, type-check and test both languages; all must pass before a push.
 gates: format lint types test
 
@@ -23,6 +26,10 @@ test:
 # Rate rendered cells in the browser at http://127.0.0.1:8765 (local only).
 curate:
     uv run python -m stillstift.curator
+
+# Start the project's own ComfyUI (STILLSTIFT_COMFY_HOME) on 127.0.0.1:8189, without PNG metadata; Ctrl+C stops it.
+comfy:
+    pwsh -NoProfile -File scripts/comfy.ps1
 
 # Render a set's cells on the project's ComfyUI (STILLSTIFT_COMFY_URL): --lines <file> for a lab set, --profile, --cells 01,03, --dry-run, --replace. Uploads to the hosted curator when STILLSTIFT_CURATOR_URL is set.
 [positional-arguments]
