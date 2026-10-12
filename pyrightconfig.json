@@ -1,0 +1,7 @@
+{
+  "typeCheckingMode": "strict",
+  "reportMissingModuleSource": "error",
+  "reportUnnecessaryTypeIgnoreComment": "error",
+  "venvPath": ".",
+  "venv": ".venv"
+}

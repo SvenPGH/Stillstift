@@ -1,0 +1,58 @@
+# Every model file the project's ComfyUI may hold, and nothing else: `just render` refuses a
+# ComfyUI whose model folders differ from this list. Sources: huggingface.co and civitai.com only,
+# with this project's own tokens. Pin each sha256 after the first verified download.
+# commercial_images: may images made with it be sold (yes / no / unverified). Only "yes" is fetched.
+files:
+  # Probe arms A and B: the base checkpoint.
+  - folder: checkpoints
+    name: sd_xl_base_1.0.safetensors
+    url: https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
+    sha256: ""
+    license: CreativeML OpenRAIL++-M
+    commercial_images: "yes"
+    checked: "2026-10-12"
+
+  # Probe arm C: FLUX.1-dev as one fp8 file (license gated: accept it with the project's own
+  # Hugging Face account first). Outputs may be used commercially; the weights may not.
+  - folder: checkpoints
+    name: flux1-dev-fp8.safetensors
+    url: https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors
+    sha256: ""
+    license: FLUX.1 [dev] Non-Commercial License (outputs usable commercially)
+    commercial_images: "yes"
+    checked: "2026-10-12"
+
+  # The three LoRAs and the upscaler still need their exact file URL from their pages; until
+  # they are filled in they stay commented out, and the identity check expects none of them.
+  #
+  # Arm A: ColoringBook.Redmond V2 (SDXL), trigger "ColoringBookAF, Coloring Book".
+  # Page: https://huggingface.co/artificialguybr/ColoringBookRedmond-V2 (openrail-m)
+  # - folder: loras
+  #   name: ColoringBookRedmond-V2.safetensors
+  #   url: https://huggingface.co/artificialguybr/ColoringBookRedmond-V2/resolve/main/<file>
+  #   license: openrail-m
+  #   commercial_images: "yes"
+  #
+  # Arm B: Adult coloring (Ax) style (SDXL), trigger "ax_adult_coloring".
+  # Page: https://civitai.com/models/836929 (flags: Image, Rent, Sell, SellMerge)
+  # - folder: loras
+  #   name: ax-adult-coloring.safetensors
+  #   url: https://civitai.com/api/download/models/<version id>
+  #   license: Civitai permissions (Image, Rent, Sell, SellMerge)
+  #   commercial_images: "yes"
+  #
+  # Arm C: Coloring Book Flux (renderartist), trigger "c0l0ringb00k, coloring book page".
+  # Page: https://huggingface.co/renderartist/coloringbookflux (Civitai 794953: Image, Rent)
+  # - folder: loras
+  #   name: coloringbookflux.safetensors
+  #   url: https://huggingface.co/renderartist/coloringbookflux/resolve/main/<file>
+  #   license: Civitai permissions (Image, Rent)
+  #   commercial_images: "yes"
+  #
+  # Upscaler: RealESRGAN_x4plus_anime_6B (BSD-3-Clause); find a Hugging Face copy of the
+  # original release and check that its hash matches the original's.
+  # - folder: upscale_models
+  #   name: RealESRGAN_x4plus_anime_6B.pth
+  #   url: https://huggingface.co/<repo>/resolve/main/RealESRGAN_x4plus_anime_6B.pth
+  #   license: BSD-3-Clause
+  #   commercial_images: "yes"
