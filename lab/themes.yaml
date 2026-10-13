@@ -171,6 +171,7 @@ X14:
 X15:
   theme: enchanted forest
   name: "Enchanted forest"
+  picks: [13, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
   subjects:
     - [fairyring, "tiny fairies with butterfly wings dancing on a ring of big toadstools with white spots: one with long flowing hair, one with short spiky hair and a leaf dress, and a very small one riding a ladybird."]
     - [owls, "a big wise owl with tufted ears and round spectacles sitting on an old oak branch, with two small fluffy owlets beside it and the outline of a crescent moon."]
