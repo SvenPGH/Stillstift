@@ -1,7 +1,7 @@
 """`just render <entry>`: render a set's unrendered cells on the project's ComfyUI.
 
 Each finished page goes to the local store, or to the hosted curator when
-STILLSTIFT_CURATOR_URL is set; a failed upload keeps its PNG under data/failed/.
+STILLSTIFT_CURATOR_URL is set; a failed upload keeps its PNG under <STILLSTIFT_DATA>/failed/.
 """
 
 from __future__ import annotations

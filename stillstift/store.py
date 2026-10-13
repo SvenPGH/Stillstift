@@ -18,6 +18,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
 
 DATA_ENV = "STILLSTIFT_DATA"
+# Outside any checkout, so every worktree renders into and rates from the same store.
+DEFAULT_DATA = r"D:\Stillstift\data"
 RATERS_ENV = "STILLSTIFT_RATERS"
 
 SCHEMA = """
@@ -104,8 +106,8 @@ CREATE TRIGGER IF NOT EXISTS stamp_sets_delete AFTER DELETE ON sets
 
 
 def data_dir(env: Mapping[str, str] = os.environ) -> Path:
-    """Return the folder of the SQLite file, renders and sheets: $STILLSTIFT_DATA, else data."""
-    return Path(env.get(DATA_ENV, "data"))
+    """Return the folder of the SQLite file, renders and sheets: $STILLSTIFT_DATA or the default."""
+    return Path(env.get(DATA_ENV) or DEFAULT_DATA)
 
 
 def raters_from_env(env: Mapping[str, str] = os.environ) -> tuple[str, ...]:
