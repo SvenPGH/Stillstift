@@ -1,0 +1,187 @@
+# Theme sets X6-X15: X5's recipe (lab/x4_lines.py's style block and negative, ages 9 to 15,
+# profile krea2-turbo-coloring), one theme word per set, 12 subjects per set with one mandala or
+# pattern page. Every page gets a concrete cast described by age, height, hair and clothing, and
+# no two pages of a set share a main character type. Trees are bare and areas open and white, as
+# snowy firs and filled shapes tinted grey in X4.
+# Seeds: cells 01-12 at <n>001+i, cells 13-24 at <n>101+i (X6: 6001-6012, 6101-6112).
+# picks: the cell picked per subject, in subject order, once the set is viewed.
+
+X6:
+  theme: Halloween
+  name: "Halloween, friendly"
+  picks: [1, 2, 15, 4, 17, 6, 19, 8, 9, 10, 11, 24]
+  subjects:
+    - [pumpkins, "a pumpkin patch on a farm, where a tall teenage boy with curly hair and a flannel shirt lifts a huge pumpkin into a wooden wagon while his little sister of about six with two puffs of hair and rain boots hugs a tiny pumpkin, with hay bales, a scarecrow and bare trees behind them."]
+    - [trickortreat, "a street of old houses with carved pumpkins drawn as plain white outlines on the steps, where a tall girl of about twelve with glasses in a wizard robe covered in stars, a small boy of about five in a dinosaur costume and a boy of about nine in a wheelchair dressed as a knight go trick-or-treating, and an elderly neighbour with a white bun and a cardigan holds out a bowl of sweets at her door."]
+    - [hauntedhouse, "a friendly haunted house on a hill with crooked shutters and round windows, three smiling cartoon ghosts of different sizes floating around the chimney, outlined bats, a big white full moon and bare twisting trees."]
+    - [witch, "a cosy witch's kitchen where a grandmotherly witch with a long grey braid, round spectacles and a patched pointy hat stirs a bubbling cauldron, while a white cat with a curled tail sits on a shelf among jars and spell books and a little owl watches from a broom."]
+    - [party, "a costume party in a school hall with paper garlands, where a tall teenage boy with a buzz cut dressed as a robot, a girl of about ten with freckles and a long ponytail dressed as a pumpkin, and a father with a full beard dressed as a pirate bob for apples in a big tub."]
+    - [carving, "a kitchen table covered in newspaper, where a bald grandfather with a white moustache and a knitted vest carves a smiling jack-o'-lantern with his grandson of about eight, who has straight black hair, a gap-toothed grin and a striped sweater, with pumpkin seeds, spoons and finished pumpkins all around."]
+    - [teaparty, "a garden tea party at a round table, where a friendly furry monster with big round eyes, small horns and a striped scarf pours tea for a cheerful skeleton in a bow tie and a small mummy hugging a teddy bear, with cups, cupcakes and pumpkins on the table."]
+    - [cats, "two cats drawn as white outlines, a big fluffy one and a small kitten, sitting on a stone garden wall between grinning jack-o'-lanterns, under a big white full moon with outlined bats and bare branches."]
+    - [scarecrow, "a tall cheerful scarecrow with a patched hat, a stitched grin and a plaid shirt standing in a cornfield, with crows perched on its arms, a crooked wooden fence, pumpkins on the ground and a bare oak tree."]
+    - [sweetshop, "a Halloween sweet shop where a shopkeeper in her sixties with short silver hair, cat-eye glasses and an apron fills tall jars with striped sweets and swirly lollipops, all drawn as plain white outlines, while a tall teenage girl in a headscarf and a skeleton-print hoodie chooses a chocolate bar from a shelf."]
+    - [mandala, "a large symmetrical mandala made of pumpkins, bats, autumn leaves, wrapped candies, spider webs and stars arranged in radial symmetry, centered on the page."]
+    - [lanternwalk, "a family walking along a lantern-lit path through a forest of bare twisting trees: a tall mother with a long braid and a cape carrying a paper lantern, a toddler riding on the shoulders of a father with a round beard and a vampire cape, and a fluffy spaniel in a pumpkin costume."]
+
+X7:
+  theme: autumn harvest
+  name: "Autumn harvest and farm"
+  picks: [1, 2, 15, 16, 5, 6, 7, 8, 9, 10, 11, 12]
+  subjects:
+    - [orchard, "an apple orchard where a tall teenage girl with a high ponytail and overalls stands on a wooden ladder picking apples while her grandfather with a white beard and a straw hat holds a full basket below, with apple trees, wooden crates and a wheelbarrow."]
+    - [tractor, "a farmer in his fifties with a grey moustache, a flat cap and a checked shirt driving an old tractor that pulls a trailer full of pumpkins down a country lane, with a border collie running alongside and fields and a wooden barn behind."]
+    - [barnyard, "a barnyard with a big pig in a pen, a shaggy highland cow with long curved horns, a small goat standing on a barrel, a rooster on the fence and hens pecking grain, in front of a big wooden barn."]
+    - [market, "a farmers' market stall piled with squashes, corn cobs, jars of honey and loaves of bread, where a young stall holder with dreadlocks tied back and a canvas apron weighs carrots for an elderly customer with a walking stick, a beret and a shopping trolley, while a boy of about seven with a cowlick holds a balloon."]
+    - [hayride, "a hay ride on a wagon pulled by two big draft horses, with riders sitting on hay bales: a teenage boy with braces and a beanie, a girl of about eleven with long wavy hair and a fleece jacket, and a toddler in a knitted hat on the lap of a mother with a short bob."]
+    - [leaves, "a backyard with a big pile of fallen leaves under a bare maple tree, where a boy of about ten with glasses and a puffer vest jumps into the pile, a small dachshund chases a leaf and his teenage sister with a pixie cut rakes nearby."]
+    - [cornmaze, "a corn maze seen from above, with tall rows of corn, a wooden lookout tower at one side and two children finding their way: a tall girl of about thirteen with a headband holding a map and a boy of about eight with spiky hair and a toy telescope."]
+    - [baking, "a farmhouse kitchen where a middle-aged baker with rolled-up sleeves, a long grey ponytail and an apron takes an apple pie out of the oven, while a boy of about nine with freckles and a dungaree stirs batter at the table, with jars, a rolling pin and baskets of apples."]
+    - [sheep, "a sheep farm where a tall shepherd with a long beard and a wool cap leads a flock of fluffy sheep through an open gate, a sheepdog herding them, with dry stone walls and rolling hills behind."]
+    - [woodland, "a woodland floor in autumn with a squirrel gathering acorns on an oak branch, a hedgehog under fallen leaves, a family of geese flying in a V overhead, mushrooms and pine cones among the leaves and bare trees around."]
+    - [mandala, "a large symmetrical mandala made of autumn leaves, acorns, apples, ears of wheat and sunflowers arranged in radial symmetry, centered on the page."]
+    - [festival, "a village harvest festival with a long table under strings of lanterns, where an old man in a wheelchair with a flat cap raises a cup of cider, a young baker with short curly hair and hoop earrings carries a big round loaf, and children run past with paper pinwheels."]
+
+X8:
+  theme: under-the-sea
+  name: "Under the sea"
+  picks: [13, 2, 3, 4, 5, 6, 7, 8, 9, 10, 23, 12]
+  subjects:
+    - [reef, "a coral reef where a teenage diver with a long braid, a wetsuit and a mask photographs a huge old sea turtle, while small striped fish drawn as plain white outlines hide in an anemone and a small seahorse holds on to seaweed."]
+    - [octopus, "a curious octopus with long curling tentacles arranging shells in front of its rocky cave, with starfish, scallops and a crab with big claws on the sandy sea floor."]
+    - [shipwreck, "an old wooden shipwreck on the sea floor covered in seaweed and barnacles, with an open wooden treasure box spilling coins, an eel peeking out of a round porthole left white inside and a school of small fish swimming around the broken mast."]
+    - [whales, "a big humpback whale and her small calf swimming side by side, both drawn as white outlines with long grooved throats, with bubbles, rays of sunlight drawn as lines and seagulls on the waves above."]
+    - [mermaids, "a grown-up mermaid with long wavy hair decorated with shells sitting on a rock and braiding the hair of a little mermaid with short curly hair, while two dolphins play in the water around them."]
+    - [submarine, "a small round research submarine with big round windows left white, through which a grey-bearded scientist with glasses and a boy of about ten with a buzz cut wave at a friendly giant squid outside."]
+    - [otters, "a kelp forest with tall wavy kelp, where two sea otters float on their backs holding paws, one big and one small, while a harbour seal swims below and little fish dart between the stems."]
+    - [tidepool, "a rocky tide pool on the beach, where a girl of about eleven with freckles and a sun hat gently lifts a starfish and her grandfather with a white ponytail, rolled-up trousers and a bucket points at a hermit crab, with anemones and mussels on the rocks."]
+    - [manta, "a giant manta ray gliding over the sandy sea floor, with jellyfish trailing long ribbon tentacles, a round pufferfish and bubbles rising."]
+    - [dolphins, "a pod of dolphins of different sizes leaping through the waves next to a small sailboat, whose captain with a grey beard and a knitted hat waves from the deck, with seagulls and an island with a lighthouse behind."]
+    - [mandala, "a large symmetrical mandala made of seashells, starfish, fish, seahorses, coral and waves arranged in radial symmetry, centered on the page."]
+    - [seafloor, "a sandy sea floor where a big hermit crab carries a shell covered in tiny barnacles, a line of small fish swims past, a flat flounder lies half in the sand and a sea urchin sits among seaweed and rocks."]
+
+X9:
+  theme: dinosaur
+  name: "Dinosaurs"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  subjects:
+    - [trex, "a big Tyrannosaurus rex striding through a jungle of giant ferns, with a small pterosaur flying overhead and a little lizard scrambling away over a log."]
+    - [triceratops, "a Triceratops parent and two small babies drinking at a river, with horsetail plants, big round stones and dragonflies over the water."]
+    - [brachiosaurus, "a very tall Brachiosaurus eating leaves from the top of a tree, with a tiny Compsognathus at its feet and big ferns all around."]
+    - [dig, "a dig site in the desert where a paleontologist in her sixties with short white hair, a wide-brimmed hat and a vest brushes sand off a giant dinosaur skull, while a tall student with a beard and a cap carries bones in a crate."]
+    - [museum, "a museum hall with a huge dinosaur skeleton, where a boy of about nine with glasses and a striped shirt stares up in awe and his tall father with a man bun and a backpack holds a museum map, while a guard with a moustache stands by."]
+    - [nest, "a dinosaur nest with five big speckled eggs, two baby Maiasaura hatching from them and the parent watching over them, with ferns and leaves around the nest."]
+    - [stegosaurus, "a Stegosaurus with big plates along its back walking through a valley of ferns and cycads, with a small Ankylosaurus with a club tail following behind."]
+    - [pteranodons, "a group of Pteranodons soaring over sea cliffs, one catching a fish, with waves breaking below and a Plesiosaur raising its long neck out of the water."]
+    - [raptors, "two small feathered Velociraptors playing like curious birds among rocks and plants, one with a big feather crest and one young one chasing a beetle."]
+    - [playground, "a children's dinosaur playground with a slide shaped like a long-necked dinosaur, where a girl of about seven with two afro puffs slides down, a teenage boy with a buzz cut and a hoodie climbs the steps, and a grandfather in a flat cap sits on a bench with a thermos."]
+    - [mandala, "a large symmetrical mandala made of dinosaur footprints, fossil shells, ferns, eggs and small dinosaurs arranged in radial symmetry, centered on the page."]
+    - [spinosaurus, "a Spinosaurus with a tall sail on its back wading through a swamp and catching a big fish, with water lilies, reeds and frogs around it."]
+
+X10:
+  theme: outer space
+  name: "Outer space"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 22, 11, 12]
+  subjects:
+    - [moonwalk, "an astronaut in a puffy spacesuit planting a flag on the moon, the open visor showing a young astronaut with short curly hair, with craters and moon rocks around and the round Earth on the horizon, the sky left white with outlined stars."]
+    - [launch, "a tall rocket lifting off from a launch pad with big puffy outlined clouds of exhaust and a gantry tower, while a girl of about ten sitting on her father's shoulders and a grandmother with a sun visor watch from behind a fence."]
+    - [station, "a space station with big solar panels and round modules floating above Earth, where an astronaut with a long beard does a spacewalk tethered to a robotic arm, the sky left white with outlined stars."]
+    - [planets, "the planets of the solar system arranged in a curve around the sun, Saturn with its rings, Jupiter with its bands, small moons and a comet, all drawn as outlines on white with outlined stars."]
+    - [aliens, "three friendly aliens of different shapes, one tall with three eyes, one small and round with antennae and one with curly tentacles, waving from their round flying saucer parked on a rocky planet."]
+    - [telescope, "an evening rooftop where a teenage girl with a hijab and round glasses looks through a big telescope, while her little brother of about six with curly hair points at a shooting star and a cat sits beside them, the sky left white with outlined stars."]
+    - [rover, "a six-wheeled rover exploring a rocky Mars landscape with craters, sand dunes and tall mountains, and a small helicopter drone flying above it."]
+    - [moonbase, "a moon base with dome houses and a greenhouse full of plants, where a tall astronaut with a grey beard carries a crate and a girl of about twelve with braids drives a moon buggy."]
+    - [cockpit, "the inside of a spaceship cockpit with big round windows showing planets, where a pilot with a ponytail and a headset steers and a small robot with round eyes hands her a cup."]
+    - [comet, "a comet with a long tail passing a ringed planet, asteroids of many sizes and a satellite with a big dish, drawn as outlines on white with outlined stars."]
+    - [mandala, "a large symmetrical mandala made of planets, stars, rockets, moons and comets arranged in radial symmetry, centered on the page."]
+    - [zerog, "the inside of a space station where the crew floats in zero gravity: a tall astronaut with a shaved head juggles floating fruit, a young astronaut with long straight hair drifts upside down with a book, and a small robot catches floating water drops."]
+
+X11:
+  theme: fairy-tale
+  name: "Fairy-tale castle and knights"
+  picks: [1, 2, 3, 16, 5, 6, 7, 8, 9, 10, 11, 12]
+  subjects:
+    - [castle, "a grand fairy-tale castle on a hill with tall towers and flags, its drawbridge raised above a moat with swans, and a winding road with a horse and cart."]
+    - [dragon, "a young knight of about fifteen with a bowl haircut and a helmet slightly too big offering an apple to a friendly dragon with big wings and a curly tail, in a meadow of flowers."]
+    - [joust, "a jousting tournament with two knights on armoured horses charging toward each other, pennants and banners on the stands, and a king with a long white beard and a crown watching from his seat."]
+    - [library, "a castle library full of books and candles, where a queen in her seventies with a long grey braid, a crown and a fur-trimmed cloak reads a story to a small prince of about five with curly hair."]
+    - [blacksmith, "a castle forge where a blacksmith with a thick beard, a leather apron and rolled-up sleeves hammers a sword on an anvil, while his apprentice, a tall teenage girl with short cropped hair and goggles, works the bellows, with tools hanging on the wall."]
+    - [banquet, "a great hall banquet with long tables of roast chicken, bread and fruit, where a jester in a hat with bells juggles, a minstrel with a long moustache plays a lute and a big hound sleeps under the table."]
+    - [wizard, "an old wizard with a very long white beard, a pointed hat with stars and a crooked staff in his tower study, with an owl on a perch, bubbling potion bottles and a big globe."]
+    - [village, "the village below the castle with a stone well and timber houses, where a girl of about eight with frizzy hair and a paper crown chases geese past the well and a miller with a flour-dusted beard carries a sack."]
+    - [unicorn, "a unicorn with a flowing mane drinking from a stream in a forest clearing, with a squire of about ten with a mop of straight hair holding out his hand, rabbits and butterflies around them."]
+    - [quest, "a knight in full armour on a big draft horse crossing a stone bridge over a river, followed by a squire on a donkey carrying a shield and a banner, with the castle far behind."]
+    - [mandala, "a large symmetrical mandala made of shields, crowns, swords, castle towers, roses and small dragons arranged in radial symmetry, centered on the page."]
+    - [frogprince, "a frog wearing a tiny crown sitting on the edge of a stone well, talking to a girl of about twelve with long wavy hair and a headband who holds a ball, with ivy and flowers around the well."]
+
+X12:
+  theme: jungle and safari
+  name: "Jungle and safari"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 21, 10, 11, 12]
+  subjects:
+    - [elephants, "a big old elephant with long tusks and a baby elephant splashing at a waterhole, with zebras and a giraffe drinking at the edge and acacia trees behind."]
+    - [lions, "a lion with a big shaggy mane resting on a rock, two lionesses lying in the grass and three playful cubs tumbling over each other."]
+    - [jeep, "a safari jeep with an open roof, where a tall guide with a beard and a wide hat points at giraffes, a girl of about eleven with braces and a cap takes photos, and her grandmother with short silver hair looks through binoculars."]
+    - [monkeys, "a family of monkeys swinging through jungle vines and big leaves, a sloth hanging upside down nearby and a toucan with a huge beak on a branch."]
+    - [tiger, "a white tiger crouching by a jungle river among ferns and lotus flowers, its coat left white with only a few thin outlined stripes, with a kingfisher on a branch above."]
+    - [gorillas, "a big gorilla sitting calmly in a clearing, a young gorilla climbing on his back and another gorilla holding a baby, with banana plants around them."]
+    - [parrots, "a jungle tree full of parrots and macaws with long tail feathers, all drawn as plain white outlines, tree frogs with big round eyes on the leaves, orchids and hanging vines."]
+    - [rhino, "a big rhinoceros with two horns grazing on the savanna, with oxpecker birds on its back, a family of warthogs trotting past and a baobab tree."]
+    - [camp, "an explorer camp in the jungle with a tent and a hammock, where a botanist in her fifties with a long grey braid and a pith helmet sketches a giant flower, and a teenage boy with a buzz cut and cargo shorts looks at a beetle through a magnifying glass."]
+    - [river, "a river with a hippo yawning wide, a crocodile basking on the bank and egrets standing in the shallow water, with reeds and palms along the shore."]
+    - [mandala, "a large symmetrical mandala made of jungle leaves, flowers, butterflies, parrots and animal footprints arranged in radial symmetry, centered on the page."]
+    - [giraffes, "a giraffe family of three of very different heights eating from an acacia tree, with a group of meerkats standing on guard on a termite mound below."]
+
+X13:
+  theme: busy city
+  name: "A busy city day"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  subjects:
+    - [crossing, "a busy city crossing between tall buildings, where a crossing guard in his sixties with a grey moustache and a reflective vest holds up a round sign while a boy of about eight with a backpack and a cast on his arm, a tall teenage girl with headphones and a high bun, and a man in a suit with a briefcase cross the street."]
+    - [bakery, "a corner bakery in the morning, where a baker with a long beard and a tall chef's hat slides loaves into the shop window, while a girl of about ten with two braids and a scooter presses her nose to the glass."]
+    - [subway, "a subway carriage where a young father with a beard and a baby carrier holds the pole, a teenage boy with curly hair and a skateboard reads a comic, and an elderly passenger with a cane and a flowered headscarf sits by the window."]
+    - [foodtruck, "a city park with a food truck selling tacos, where a cook with a shaved head and an apron hands a plate to a tall teenage girl with a ponytail and a sports jersey, with pigeons, benches and trees around."]
+    - [construction, "a construction site with a tall crane, scaffolding and a cement mixer, where a builder with a hard hat and a long braid drives a digger, while a boy of about seven and his grandfather in a flat cap watch through the fence."]
+    - [firestation, "a fire station with a big fire engine parked on the street in front of it, a tall firefighter with a moustache and a younger firefighter with a short ponytail in helmets, and a spotted Dalmatian sitting proudly on the step."]
+    - [library, "a city library with tall bookshelves and big arched windows, where a librarian with short grey hair and a cardigan hands a book to a boy of about nine in a wheelchair, while a teenager with dreadlocks reads in a beanbag."]
+    - [rooftop, "a rooftop garden among skyscrapers with raised beds of tomatoes and sunflowers, where a grandfather in a white turban waters the plants and a girl of about six with short bangs feeds hens in a little coop."]
+    - [square, "a city square with a fountain, where a street musician with long silver hair plays the violin, an older couple dances, pigeons fly up and a boy on roller skates zooms past."]
+    - [river, "a city river with a big suspension bridge and a ferry full of waving passengers, while a jogger with a headband and a cyclist with a child seat pass on the riverside path."]
+    - [mandala, "a large symmetrical pattern made of tiny buildings, cars, bicycles, buses and trees arranged in radial symmetry, centered on the page."]
+    - [windows, "the front of an apartment building with many windows, each showing a different neighbour: a man with a beard watering plants, an old neighbour with curlers knitting, a cat on a sill, two kids waving and a teenager practising the cello, with laundry lines between the balconies."]
+
+X14:
+  theme: spring garden
+  name: "Spring garden and Easter"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  subjects:
+    - [egghunt, "an Easter egg hunt in a garden, where a girl of about seven with two curly puffs and a basket finds an egg under a tulip, a tall boy of about thirteen with glasses lifts a flowerpot, and a grandfather with a white beard hides eggs behind a tree."]
+    - [rabbits, "a big rabbit and three baby bunnies of different sizes among daffodils and tulips, one nibbling a carrot, one asleep and one sniffing a butterfly."]
+    - [painting, "a kitchen table where a grandmother with short grey hair and an apron and a boy of about nine with freckles paint patterned Easter eggs, with brushes, egg cups and a basket of finished eggs."]
+    - [vegetables, "a vegetable garden where a tall man in his thirties with a beard and a straw hat digs with a spade while a girl of about five in a sunhat plants seedlings in rows, with a watering can and a wheelbarrow."]
+    - [nest, "a bird's nest on a blossoming branch with three eggs, a parent bird feeding two open-beaked chicks, and blossoms and leaves all around."]
+    - [pond, "a farmyard pond with a duck leading a line of ducklings, fluffy chicks pecking near a hen, and a lamb with a bow on the grass."]
+    - [flowers, "a flower market with buckets of tulips, daffodils and lilies, where a florist with a long braid and an apron wraps a bouquet for a teenage boy with spiky hair and a skateboard."]
+    - [picnic, "a picnic under a blossom tree, with a family on a blanket: a father in a turban with a short beard, a toddler with a bowl haircut eating strawberries, and a big fluffy retriever begging for a sandwich."]
+    - [bees, "a garden of tall flowers with butterflies of different shapes, bees flying around a beehive, a ladybird on a leaf and a snail on a stone."]
+    - [parade, "a spring parade on a village street, where children wear decorated bonnets and bunny ears: a girl of about ten in a wheelchair decorated with paper flowers, a boy of about six in a chick costume and his older brother with a drum."]
+    - [mandala, "a large symmetrical mandala made of Easter eggs, tulips, daisies, bunnies, butterflies and leaves arranged in radial symmetry, centered on the page."]
+    - [greenhouse, "a glass greenhouse full of potted plants and seedlings, where a gardener in her seventies with white curly hair, round glasses and gardening gloves repots a cactus while a cat sleeps on a shelf."]
+
+X15:
+  theme: enchanted forest
+  name: "Enchanted forest"
+  picks: [13, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  subjects:
+    - [fairyring, "tiny fairies with butterfly wings dancing on a ring of big toadstools with white spots: one with long flowing hair, one with short spiky hair and a leaf dress, and a very small one riding a ladybird."]
+    - [owls, "a big wise owl with tufted ears and round spectacles sitting on an old oak branch, with two small fluffy owlets beside it and the outline of a crescent moon."]
+    - [treehouse, "a tree house built in a huge old tree, with a spiral staircase, round windows and hanging lanterns, where a gnome with a long beard waves from the door."]
+    - [stag, "a stag with flowers and vines woven into its antlers standing in a forest clearing, with fireflies drawn as little stars, rabbits and a fox around it."]
+    - [gnomes, "a gnome village of mushroom houses with little doors and windows, where an old gnome with a long white beard pushes a wheelbarrow of berries and a young gnome in a pointed hat reads a book to a hedgehog."]
+    - [teaparty, "a fairy tea party on a tree stump, with acorn cups, a frog in a waistcoat, a mouse in an apron and a fairy with braided hair pouring tea."]
+    - [pond, "a forest pond with water lilies, a frog wearing a crown on a lily pad, dragonflies, cattails and a little wooden bridge."]
+    - [explorers, "two children exploring a forest path lined with giant mushrooms: a tall girl of about thirteen with a short bob and a lantern, and a boy of about seven with curly hair and a butterfly net, with a friendly fox leading the way."]
+    - [dragon, "a tiny friendly dragon curled up on a mossy rock, with a squirrel and a little songbird beside it, ferns and flowers around."]
+    - [cottage, "a cottage with a crooked mossy roof covered in flowers, a round door and a herb garden with a well, where an old woodcutter with a grey beard chops logs and a goose waddles past."]
+    - [mandala, "a large symmetrical mandala made of mushrooms, leaves, ferns, acorns, owls and stars arranged in radial symmetry, centered on the page."]
+    - [troll, "a friendly troll with big ears and a patched vest fishing from a mossy stone bridge over a stream, with a fairy sitting on his shoulder and fish jumping in the water."]

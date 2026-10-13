@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 STYLE = (
-    "A black-and-white Christmas coloring book page for children aged 9 to 15: {subject} "
+    "A black-and-white {theme} coloring book page for children aged 9 to 15: {subject} "
     "The scene fills the whole page from edge to edge, with background details reaching all "
     "four sides and no large empty areas. It is drawn with moderate detail in clean, bold black "
     "outlines on a plain white background, with medium-sized areas that are easy to color and "
@@ -147,8 +147,8 @@ RERENDERS = (
 )
 
 
-def line(subject: str, seed: int) -> str:
-    prompt = STYLE.format(subject=subject)
+def line(subject: str, seed: int, theme: str = "Christmas") -> str:
+    prompt = STYLE.format(theme=theme, subject=subject)
     if '"' in prompt + NEGATIVE:
         msg = "a cell line's text cannot hold a double quote"
         raise ValueError(msg)
