@@ -15,7 +15,7 @@ with a buzz cut at the camp.
 | lions | #02 | Mane, two lionesses, cubs tumbling |
 | jeep | #03 | Guide, girl with camera, grandmother with binoculars |
 | monkeys | #04 | Sloth and toucan |
-| tiger | #17 | Stripes solid black at both seeds (one retry, see below) |
+| tiger | #05 | Retried as a white tiger with a few thin outlined stripes: coat now open to colour |
 | gorillas | #06 | Young one on the back, baby held |
 | parrots | #07 | White outlines, tree frogs, orchids |
 | rhino | #08 | Oxpeckers solid black (small) |
@@ -24,8 +24,12 @@ with a buzz cut at the camp.
 | mandala | #11 | Leaves, flowers, butterflies |
 | giraffes | #12 | Three heights, meerkats on the mound |
 
+## Retry
+
+The tiger (cells 05, 17) was re-rendered once as "a white tiger ... its coat left white with
+only a few thin outlined stripes". Both came back with outlined stripes instead of black bands.
+
 ## Weak
 
-- Bold animal stripes (tiger, zebra) come out as solid black bands; "closed outlined bands left
-  white inside" did not change that.
+- Bold animal stripes come out as solid black bands unless the animal is called white with thin stripes (fixed for the tiger; the zebras stay black).
 - A tent opening seen from outside fills black on one seed, like the igloo and cave arches.

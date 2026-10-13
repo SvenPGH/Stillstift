@@ -15,3 +15,4 @@ One line per set, newest last: `- P1 · <name> · <audience> · <YYYY-MM-DD> · 
 - X11 · Fairy-tale castle and knights · ages 9–15 · 2026-10-13 · Casts as written; one cloak lining tinted pink; raised drawbridge kept the gate white — notes in `lab/x11-notes.md`
 - X12 · Jungle and safari · ages 9–15 · 2026-10-13 · No tint, casts as written; tiger and zebra stripes solid black, one tent opening black — notes in `lab/x12-notes.md`
 - X13 · A busy city day · ages 9–15 · 2026-10-13 · Busiest pages, casts held; food truck sign carries garbled letters, dense city mandala — notes in `lab/x13-notes.md`
+- X14 · Spring garden and Easter · ages 9–15 · 2026-10-13 · Open, gentle pages, first seed clean on every subject; daffodils turn yellow on one seed — notes in `lab/x14-notes.md`

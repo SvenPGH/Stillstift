@@ -117,7 +117,7 @@ X11:
 X12:
   theme: jungle and safari
   name: "Jungle and safari"
-  picks: [1, 2, 3, 4, 17, 6, 7, 8, 21, 10, 11, 12]
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 21, 10, 11, 12]
   subjects:
     - [elephants, "a big old elephant with long tusks and a baby elephant splashing at a waterhole, with zebras and a giraffe drinking at the edge and acacia trees behind."]
     - [lions, "a lion with a big shaggy mane resting on a rock, two lionesses lying in the grass and three playful cubs tumbling over each other."]
@@ -153,6 +153,7 @@ X13:
 X14:
   theme: spring garden
   name: "Spring garden and Easter"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
   subjects:
     - [egghunt, "an Easter egg hunt in a garden, where a girl of about seven with two curly puffs and a basket finds an egg under a tulip, a tall boy of about thirteen with glasses lifts a flowerpot, and a grandfather with a white beard hides eggs behind a tree."]
     - [rabbits, "a big rabbit and three baby bunnies of different sizes among daffodils and tulips, one nibbling a carrot, one asleep and one sniffing a butterfly."]
