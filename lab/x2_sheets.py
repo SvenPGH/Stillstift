@@ -32,7 +32,9 @@ INK = (236, 231, 225)
 
 
 def page(entry: str, number: int) -> Path:
-    return OUTPUTS / f"{entry}_{number:02d}_00001_.png"
+    """Return the cell's latest render; ComfyUI saves a re-render as _00002_, not over _00001_."""
+    found = sorted(OUTPUTS.glob(f"{entry}_{number:02d}_*_.png"))
+    return found[-1] if found else OUTPUTS / f"{entry}_{number:02d}_00001_.png"
 
 
 def x2_rows() -> list[tuple[str, list[Path]]]:
