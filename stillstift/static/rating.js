@@ -29,6 +29,7 @@
  *   cell_id: string,
  *   image: string,
  *   thumb: string,
+ *   preview: string,
  *   download: string,
  *   prompt: string,
  *   negative: string,

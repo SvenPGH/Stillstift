@@ -47,6 +47,7 @@ from stillstift.register import (
     parse_settings,
     parse_tags,
     png_infotext,
+    preview_url,
     read_predictions,
     register_render,
     thumb_url,
@@ -64,7 +65,7 @@ from stillstift.store import (
     Store,
     raters_from_env,
 )
-from stillstift.webp import thumb_of
+from stillstift.webp import PREVIEW_WIDTH, THUMB_WIDTH, thumb_of
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
@@ -282,6 +283,7 @@ class CellView(BaseModel):
     cell_id: str
     image: str
     thumb: str
+    preview: str
     download: str
     prompt: str
     negative: str
@@ -502,6 +504,7 @@ def _cell_views(
                 cell_id=c.cell_id,
                 image=image_url(c.entry, c.cell_id, c.rendered_at),
                 thumb=thumb_url(c.entry, c.cell_id, c.rendered_at),
+                preview=preview_url(c.entry, c.cell_id, c.rendered_at),
                 download=_download(c),
                 prompt=c.prompt,
                 negative=c.negative,
@@ -593,14 +596,16 @@ def _image_file(store: Store, entry: str, cell_id: str, request: Request) -> Res
     return _revalidated(cell.image_path, media, request)
 
 
-def _thumb_file(store: Store, entry: str, cell_id: str, request: Request) -> Response:
-    """Serve the render's thumbnail for grids; the render itself when one can't be made."""
+def _thumb_file(
+    store: Store, entry: str, cell_id: str, request: Request, width: int = THUMB_WIDTH
+) -> Response:
+    """Serve the render as a WebP at most `width` wide; the render itself when one can't be made."""
     cell = store.cell(entry, cell_id)
     path = None if cell is None else cell.image_path
     if path is None or not path.is_file():
         raise HTTPException(status.HTTP_404_NOT_FOUND, "no render for this cell")
     try:
-        thumb = thumb_of(path)
+        thumb = thumb_of(path, width)
     except OSError:
         return _image_file(store, entry, cell_id, request)
     return _revalidated(thumb, "image/webp", request)
@@ -837,6 +842,10 @@ def create_app(
     @app.get("/api/entries/{entry}/cells/{cell_id}/thumb")
     def thumb(entry: str, cell_id: str, store: StoreDep, request: Request) -> Response:
         return _thumb_file(store, entry, cell_id, request)
+
+    @app.get("/api/entries/{entry}/cells/{cell_id}/preview")
+    def preview(entry: str, cell_id: str, store: StoreDep, request: Request) -> Response:
+        return _thumb_file(store, entry, cell_id, request, PREVIEW_WIDTH)
 
     app.mount("/static", _RevalidatedStatic(directory=STATIC), name="static")
     return app

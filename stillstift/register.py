@@ -21,7 +21,7 @@ from PIL import Image
 from stillstift.kinds import cell_id, is_lab
 from stillstift.png import with_parameters
 from stillstift.store import Cell, Prediction, SetName, Store, Verdict, data_dir
-from stillstift.webp import thumb_path
+from stillstift.webp import WIDTHS, thumb_path
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -342,15 +342,20 @@ def thumb_url(entry: str, cell: str, rendered_at: datetime) -> str:
     return _cell_url(entry, cell, rendered_at, "thumb")
 
 
+def preview_url(entry: str, cell: str, rendered_at: datetime) -> str:
+    """Return the URL of a render's phone-sized preview, versioned as image_url is."""
+    return _cell_url(entry, cell, rendered_at, "preview")
+
+
 def delete_entry(store: Store, entry: str) -> bool:
-    """Delete the set from the store and its renders and thumbnails from disk.
+    """Delete the set from the store and its renders, thumbnails and previews from disk.
 
     False when it held none.
     """
     paths = store.delete_entry(entry)
     if paths is None:
         return False
-    thumbs = [thumb_path(path) for path in paths]
+    thumbs = [thumb_path(path, width) for path in paths for width in WIDTHS]
     for path in [*paths, *thumbs]:
         path.unlink(missing_ok=True)
     for folder in sorted({path.parent for path in [*thumbs, *paths]}, reverse=True):

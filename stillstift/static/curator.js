@@ -31,6 +31,7 @@ import {
   triRows,
 } from "./rate-ui.js";
 import { watchChanges } from "./live.js";
+import { withRater } from "./raters.js";
 import { mountShell } from "./shell.js";
 import {
   draftKey,
@@ -39,6 +40,7 @@ import {
   openingDraft,
   stepList,
 } from "./steps.js";
+import { wireSwipe } from "./swipe.js";
 
 /** @typedef {import("./rating.js").CellView} CellView */
 /** @typedef {import("./rating.js").Draft} Draft */
@@ -53,7 +55,8 @@ import {
 const PICKER_KINDS = ["all", "P", "X", "T"];
 
 const SAVED_PAUSE_MS = 650;
-const SWIPE_PX = 50;
+/** Where the rating view shows the phone-sized preview instead of the full render. */
+const PHONE = window.matchMedia("(max-width: 700px)");
 
 const ui = {
   picker: byId("picker", HTMLButtonElement),
@@ -70,7 +73,9 @@ const ui = {
   negativeText: byId("negative-text", HTMLElement),
   settings: byId("settings", HTMLElement),
   rate: byId("rate", HTMLElement),
+  frame: byId("frame", HTMLElement),
   image: byId("image", HTMLImageElement),
+  zoom: byId("zoom", HTMLButtonElement),
   imgCode: byId("img-code", HTMLElement),
   imgSize: byId("img-size", HTMLElement),
   lightbox: byId("lightbox", HTMLElement),
@@ -102,6 +107,9 @@ const ui = {
   favText: byId("fav-text", HTMLElement),
   tiles: byId("tiles", HTMLElement),
   note: byId("note", HTMLElement),
+  dock: byId("dock", HTMLElement),
+  dockPrev: byId("dock-prev", HTMLButtonElement),
+  dockNext: byId("dock-next", HTMLButtonElement),
   submit: byId("submit", HTMLButtonElement),
 };
 
@@ -155,14 +163,6 @@ function rater() {
   return shell.currentRater();
 }
 
-/** @param {string} url */
-function withRater(url) {
-  const picked = rater();
-  if (picked === null) return url;
-  const join = url.includes("?") ? "&" : "?";
-  return `${url}${join}rater=${encodeURIComponent(picked)}`;
-}
-
 function summary() {
   return state.entries.find((e) => e.entry === state.entry) ?? null;
 }
@@ -198,7 +198,7 @@ function edit(change) {
 
 async function loadEntries() {
   state.entries = /** @type {EntrySummary[]} */ (
-    await api(withRater("/api/entries"))
+    await api(await shell.raterUrl("/api/entries"))
   );
 }
 
@@ -219,7 +219,7 @@ function stepCell(delta) {
 
 /** @param {string} entry */
 async function loadCells(entry) {
-  const url = withRater(`${entryUrl(entry)}/cells`);
+  const url = await shell.raterUrl(`${entryUrl(entry)}/cells`);
   state.cells = /** @type {CellView[]} */ (await api(url));
 }
 
@@ -315,7 +315,7 @@ async function submit() {
   state.status = "saving";
   render();
   try {
-    await api(withRater(ratingUrl(state.entry, cell.cell_id)), {
+    await api(withRater(ratingUrl(state.entry, cell.cell_id), rater()), {
       method: "POST",
       ...json(body),
     });
@@ -358,7 +358,7 @@ async function saveFavorite() {
   state.gridStatus = "saving";
   render();
   try {
-    await api(withRater(`${entryUrl(state.entry)}/favorite`), {
+    await api(withRater(`${entryUrl(state.entry)}/favorite`, rater()), {
       method: "PUT",
       ...json({ cell: favorite }),
     });
@@ -388,7 +388,7 @@ async function undo() {
   let removed;
   try {
     removed = /** @type {Rating} */ (
-      await api(withRater(ratingUrl(last.entry, last.cell)), {
+      await api(withRater(ratingUrl(last.entry, last.cell), rater()), {
         method: "DELETE",
       })
     );
@@ -471,9 +471,29 @@ function renderTri() {
   );
 }
 
+/**
+ * The rating view's image: the preview on a phone, to spare mobile data; the full render opens
+ * from it, in the lightbox.
+ * @param {CellView} cell
+ */
+function viewImage(cell) {
+  return PHONE.matches ? cell.preview : cell.image;
+}
+
+/** Fetch the next cell's image ahead, so stepping on shows it at once. */
+function preloadNext() {
+  const list = stepList(state.cells, state.cur, state.scope);
+  const next = state.cells[neighbour(list, state.cur, 1)];
+  if (next !== undefined) new Image().src = viewImage(next);
+}
+
 /** @param {CellView} cell */
 function renderImage(cell) {
-  if (ui.image.getAttribute("src") !== cell.image) ui.image.src = cell.image;
+  const src = viewImage(cell);
+  if (ui.image.getAttribute("src") !== src) {
+    ui.image.src = src;
+    preloadNext();
+  }
   ui.image.alt = `Image ${state.entry} ${cell.cell_id}`;
   ui.imgCode.textContent = `${state.entry} · ${cell.cell_id}`;
   const size = cell.settings.find(([key]) => key === "size");
@@ -605,9 +625,9 @@ function renderLightbox() {
 function rateShown() {
   const index = state.lightbox;
   if (index === null) return;
-  const fromGrid = state.view === "grid";
   state.lightbox = null;
-  openCell(index, fromGrid);
+  if (state.view === "rate" && index === state.cur) render();
+  else openCell(index, state.view === "grid" || state.returnToGrid);
 }
 
 function renderPicker() {
@@ -805,6 +825,11 @@ function render() {
   if (state.view === "empty") renderEmpty();
   renderLightbox();
   renderSubmit(ui, floatingButton(cell));
+  ui.dock.hidden = ui.submit.hidden;
+  ui.dockPrev.hidden = cell === null;
+  ui.dockNext.hidden = cell === null;
+  ui.dockPrev.disabled = ui.stepPrev.disabled;
+  ui.dockNext.disabled = ui.stepNext.disabled;
 }
 
 /**
@@ -867,6 +892,17 @@ function wire() {
   ui.stepNext.addEventListener("click", () => {
     stepCell(1);
   });
+  ui.dockPrev.addEventListener("click", () => {
+    stepCell(-1);
+  });
+  ui.dockNext.addEventListener("click", () => {
+    stepCell(1);
+  });
+  ui.zoom.addEventListener("click", () => {
+    openLightbox(state.cur);
+  });
+  wireSwipe(ui.frame, stepCell);
+  PHONE.addEventListener("change", render);
   document.addEventListener("keydown", (event) => {
     if (state.lightbox === null) {
       if (state.view !== "rate" || typing(event.target)) return;
@@ -878,25 +914,7 @@ function wire() {
     else if (event.key === "ArrowLeft") stepLightbox(-1);
     else if (event.key === "ArrowRight") stepLightbox(1);
   });
-  let swipeFrom = 0;
-  let swiped = false;
-  ui.lbStage.addEventListener("pointerdown", (event) => {
-    swipeFrom = event.clientX;
-  });
-  ui.lbStage.addEventListener("pointerup", (event) => {
-    const moved = event.clientX - swipeFrom;
-    swiped = Math.abs(moved) >= SWIPE_PX;
-    if (swiped) stepLightbox(moved < 0 ? 1 : -1);
-  });
-  ui.lbStage.addEventListener(
-    "click",
-    (event) => {
-      if (!swiped) return;
-      swiped = false;
-      event.stopPropagation();
-    },
-    true,
-  );
+  wireSwipe(ui.lbStage, stepLightbox);
   ui.submit.addEventListener("click", () => {
     if (state.view === "grid") onGridButton();
     else void submit();

@@ -1,6 +1,7 @@
-"""Thumbnails for grids and pickers: a small WebP cached beside each render.
+"""Thumbnails for grids and pickers, and previews for phones: WebPs cached beside each render.
 
-Renders themselves stay lossless PNG: a page is line art and goes to print.
+Renders themselves stay lossless PNG: a page is line art and goes to print. A preview is the page
+at phone-screen size, a fraction of the PNG's bytes on mobile data.
 """
 
 from __future__ import annotations
@@ -11,17 +12,20 @@ from pathlib import Path
 from PIL import Image
 
 THUMB_WIDTH = 480
+PREVIEW_WIDTH = 1080
+WIDTHS = (THUMB_WIDTH, PREVIEW_WIDTH)
 THUMB_QUALITY = 80
 
 
-def thumb_path(image: Path) -> Path:
-    """Return where a render's thumbnail lives: `thumbs/<cell>.webp` beside it."""
-    return image.parent / "thumbs" / f"{image.stem}.webp"
+def thumb_path(image: Path, width: int = THUMB_WIDTH) -> Path:
+    """Return where a render's WebP lives: `thumbs/<cell>.webp`, `thumbs/<cell>.<width>.webp`."""
+    name = image.stem if width == THUMB_WIDTH else f"{image.stem}.{width}"
+    return image.parent / "thumbs" / f"{name}.webp"
 
 
-def thumb_of(image: Path) -> Path:
-    """Return the render's thumbnail, made first when it is missing or older than the render."""
-    thumb = thumb_path(image)
+def thumb_of(image: Path, width: int = THUMB_WIDTH) -> Path:
+    """Return the render's WebP at most `width` wide, made first when missing or stale."""
+    thumb = thumb_path(image, width)
     if thumb.is_file() and thumb.stat().st_mtime_ns >= image.stat().st_mtime_ns:
         return thumb
     thumb.parent.mkdir(exist_ok=True)
@@ -30,7 +34,7 @@ def thumb_of(image: Path) -> Path:
         try:
             with Image.open(image) as source:
                 small = source.convert("RGB")
-            small.thumbnail((THUMB_WIDTH, THUMB_WIDTH * 4))
+            small.thumbnail((width, width * 4))
             small.save(out, format="WEBP", quality=THUMB_QUALITY, method=4)
         except OSError:
             made.unlink()
