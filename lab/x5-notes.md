@@ -62,25 +62,31 @@ tinted trees anywhere; the birch wording worked), with no lettering.
 | subject | pick | why |
 |---|---|---|
 | 01 market | #13 (301) | Fewer tiny background faces than #01, which also repeats the mother in the crowd |
-| 02 gingerbread | #02 (202) | Fuller house and candy; both seeds are alike |
+| 02 gingerbread | #02 (202) | Polish round: the gingerbread lady is now clearly smaller than the man; fuller house than #14 |
 | 03 reindeer | #15 (303) | Spotted calf, snowfall, fox and hare all readable |
 | 04 snowmen | #04 (204) | Reads clearly as a teenager; #16 has a floating stick |
 | 05 workshop | #17 (305) | #05 has a stray row of boots under the table |
 | 06 tree | #18 (306) | The girl reaches for the star; grandmother hands an ornament; #06 has a star in her hand and one on top |
 | 07 sledding | #19 (307) | #07 puts the father's feet on the girl's sled |
 | 08 fireplace | #20 (308) | Slightly fuller; both are good |
-| 09 nutcracker | #09 (209) | Ballerina stands; #21 balances her on the horse |
+| 09 nutcracker | #09 (209) | Polish round: the drummer now reaches the nutcracker's knee; #21 draws the drummer as a second nutcracker |
 | 10 village | #22 (310) | Cobbled street and a bakery window; #10 adds a stray passenger |
 | 11 mandala | #11 (211) | Same as X4's pick |
-| 12 polar bear | X4 #27 (412) | Both X5 pages have the grey igloo door |
+| 12 polar bear | X4 #27 (412) | Both X5 pages still fill the igloo door grey, even after the polish round |
 
 Sheets: `D:\Stillstift\christmas-set-x5.png` (the picks) and `D:\Stillstift\christmas-x4-vs-x5.png`
 (each subject's X4 pick beside its X5 pick), from `uv run python -m lab.x5_sheets`.
 
+## Polish round
+
+Cells 02, 14 (gingerbread), 09, 21 (nutcracker) and 12, 24 (polar bear) were re-rendered once with
+concrete size wording ("as tall as the door", "only reaches his shoulder", "whose hat only
+reaches the nutcracker's knee") and an igloo entrance described as "an open white arch ... left
+white inside". The size wording worked at both seeds; the igloo door stays filled grey whatever
+the wording, so the polar bear keeps X4's #27. Krea fills an arched opening seen from outside;
+posing the animals in front of the igloo's side would avoid the doorway altogether.
+
 ## Next
 
-- **Polar bear:** say the igloo entrance is "an open white arch with ice blocks around it"; the
-  scarf and bobble hat are worth keeping.
-- **Gingerbread and nutcracker:** give the figures concrete height ratios ("half his height").
 - **Print:** as in X4 (3x upscale, threshold, margins, credits); the solid black hair stays
   black after thresholding, which is fine as an accent but leaves less to colour.

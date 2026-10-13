@@ -30,9 +30,10 @@ SUBJECTS = (
         "gingerbread",
         (
             "a big gingerbread house decorated with candy canes, gumdrops, icing swirls and "
-            "lollipops, with a candy path leading to its door. In front of it stand a tall, thin "
-            "gingerbread man with a bow tie and icing buttons, a gingerbread lady half his "
-            "height with an icing skirt and a bun, and a tiny gingerbread baby between them."
+            "lollipops, with a candy path leading to its door. In front of it stand a very tall "
+            "gingerbread man with a bow tie and icing buttons, as tall as the door, a much "
+            "smaller gingerbread lady with an icing skirt and a bun whose head only reaches his "
+            "shoulder, and a tiny gingerbread baby no bigger than his hand."
         ),
     ),
     (
@@ -98,8 +99,9 @@ SUBJECTS = (
         "nutcracker",
         (
             "a tall, thin nutcracker soldier with a white beard and a tall hat standing guard "
-            "beside a toy castle, with a short, round toy drummer soldier, a ballerina figure "
-            "with her hair in a bun, a wooden rocking horse and toy drums around them."
+            "beside a toy castle, with a tiny toy drummer soldier at his feet whose hat only "
+            "reaches the nutcracker's knee, a ballerina figure with her hair in a bun standing on "
+            "the floor, a wooden rocking horse and toy drums around them."
         ),
     ),
     (
@@ -123,7 +125,8 @@ SUBJECTS = (
         "polarbear",
         (
             "a huge old polar bear wearing a knitted scarf and a small chubby penguin chick in a "
-            "bobble hat wrapping presents together on the ice in front of an igloo, with "
+            "bobble hat wrapping presents together on the ice in front of an igloo whose entrance "
+            "is an open white arch outlined with ice blocks and left white inside, with "
             "ribbons, bows, rolls of wrapping paper and a pile of gifts, snow-covered ice blocks "
             "around them, a fishing hole with a little fish, and a starry sky full of "
             "snowflakes above."
