@@ -63,6 +63,7 @@ X8:
 X9:
   theme: dinosaur
   name: "Dinosaurs"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
   subjects:
     - [trex, "a big Tyrannosaurus rex striding through a jungle of giant ferns, with a small pterosaur flying overhead and a little lizard scrambling away over a log."]
     - [triceratops, "a Triceratops parent and two small babies drinking at a river, with horsetail plants, big round stones and dragonflies over the water."]

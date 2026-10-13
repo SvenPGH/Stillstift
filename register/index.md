@@ -10,3 +10,4 @@ One line per set, newest last: `- P1 · <name> · <audience> · <YYYY-MM-DD> · 
 - X6 · Halloween, friendly · ages 9–15 · 2026-10-13 · Distinct casts on every page; carved pumpkins on steps and candy corn come out orange, bats and crows solid black — notes in `lab/x6-notes.md`
 - X7 · Autumn harvest and farm · ages 9–15 · 2026-10-13 · Cleanest theme set: no tint, every cast as written, both seeds usable; only the honey jars turn orange — notes in `lab/x7-notes.md`
 - X8 · Under the sea · ages 9–15 · 2026-10-13 · No tint (white-outline wording held), casts as written; one cave arch filled grey, dense mandala — notes in `lab/x8-notes.md`
+- X9 · Dinosaurs · ages 9–15 · 2026-10-13 · No tint, first seed good on every subject; skull sockets and afro puffs fill black on some pages — notes in `lab/x9-notes.md`
