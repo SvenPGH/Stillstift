@@ -20,7 +20,9 @@ from lab.x4_sheets import COLUMNS, grid, picked
 THEMES = Path(__file__).with_name("themes.yaml")
 SECOND_SEED = 100
 USAGE = (
-    "usage: python -m lab.themes lines <set> <out file>\n       python -m lab.themes sheet <set>\n"
+    "usage: python -m lab.themes lines <set> <out file>\n"
+    "       python -m lab.themes sheet <set>\n"
+    "       python -m lab.themes all <set>\n"
 )
 
 
@@ -59,6 +61,16 @@ def sheet(entry: str) -> int:
     return grid(tiles, COLUMNS, ROOT / f"set-{entry}.png")
 
 
+def contact(entry: str) -> int:
+    """Write the review sheet set-X<n>-all.png: each subject's two seeds side by side."""
+    theme = themes()[entry]
+    count = len(theme.subjects)
+    names = [name for name, _ in theme.subjects]
+    cells = tuple(cell for n in range(count) for cell in (n + 1, n + 1 + count))
+    tiles = picked(entry, cells, [name for name in names for _ in range(2)], seeds(entry))
+    return grid(tiles, 6, ROOT / f"set-{entry}-all.png")
+
+
 def main(argv: list[str]) -> int:
     match argv:
         case ["lines", entry, out]:
@@ -68,6 +80,8 @@ def main(argv: list[str]) -> int:
             return 0
         case ["sheet", entry]:
             return sheet(entry)
+        case ["all", entry]:
+            return contact(entry)
         case _:
             sys.stderr.write(USAGE)
             return 1

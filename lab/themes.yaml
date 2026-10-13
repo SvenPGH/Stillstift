@@ -9,6 +9,7 @@
 X6:
   theme: Halloween
   name: "Halloween, friendly"
+  picks: [1, 2, 15, 4, 17, 6, 19, 8, 9, 10, 11, 24]
   subjects:
     - [pumpkins, "a pumpkin patch on a farm, where a tall teenage boy with curly hair and a flannel shirt lifts a huge pumpkin into a wooden wagon while his little sister of about six with two puffs of hair and rain boots hugs a tiny pumpkin, with hay bales, a scarecrow and bare trees behind them."]
     - [trickortreat, "a street of old houses with carved pumpkins on the steps, where a tall girl of about twelve with glasses in a wizard robe covered in stars, a small boy of about five in a dinosaur costume and a boy of about nine in a wheelchair dressed as a knight go trick-or-treating, and an elderly neighbour with a white bun and a cardigan holds out a bowl of sweets at her door."]
