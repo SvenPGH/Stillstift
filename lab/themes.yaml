@@ -27,6 +27,7 @@ X6:
 X7:
   theme: autumn harvest
   name: "Autumn harvest and farm"
+  picks: [1, 2, 15, 16, 5, 6, 7, 8, 9, 10, 11, 12]
   subjects:
     - [orchard, "an apple orchard where a tall teenage girl with a high ponytail and overalls stands on a wooden ladder picking apples while her grandfather with a white beard and a straw hat holds a full basket below, with apple trees, wooden crates and a wheelbarrow."]
     - [tractor, "a farmer in his fifties with a grey moustache, a flat cap and a checked shirt driving an old tractor that pulls a trailer full of pumpkins down a country lane, with a border collie running alongside and fields and a wooden barn behind."]
