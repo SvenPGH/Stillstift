@@ -67,3 +67,49 @@ files:
     license: Civitai permissions (Image, RentCivit, Rent, Sell, SellMerge)
     commercial_images: "yes"
     checked: "2026-10-12"
+
+  # Probe X2 arms K and K+Q: Krea 2 Turbo, fp8 (nvfp4 needs a newer GPU than the 4060 Ti), with
+  # its Qwen3-VL 4B text encoder and the Qwen-Image VAE, as ComfyUI's "Krea-2: Text to Image"
+  # template loads them. Page: https://huggingface.co/Comfy-Org/Krea-2
+  # Krea 2 Community License (https://krea.ai/krea-2-licensing): outputs may be used
+  # commercially only while the company's annual revenue is under $1M, with AI disclosure where
+  # required; above that, this "yes" no longer holds.
+  - folder: diffusion_models
+    name: krea2_turbo_fp8_scaled.safetensors
+    url: https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_fp8_scaled.safetensors
+    sha256: eb4dd8c612cfd10f64f25b057e6e6bbcb5737c94a7372177e456dbf7579502f1
+    license: Krea 2 Community License (outputs commercial under $1M annual revenue)
+    commercial_images: "yes"
+    checked: "2026-10-13"
+
+  - folder: text_encoders
+    name: qwen3vl_4b_fp8_scaled.safetensors
+    url: https://huggingface.co/Comfy-Org/Krea-2/resolve/main/text_encoders/qwen3vl_4b_fp8_scaled.safetensors
+    sha256: 54bd5144df0bbc25dd6ccadfcb826b521445a1b06ae5a42570bdd2974ca87094
+    license: Krea 2 Community License (outputs commercial under $1M annual revenue)
+    commercial_images: "yes"
+    checked: "2026-10-13"
+
+  # Kept locally under its own name; the URL's underscores are percent-encoded (%5F), which
+  # Hugging Face resolves to the same file (same sha256).
+  - folder: vae
+    name: krea2_vae.safetensors
+    url: https://huggingface.co/Comfy-Org/Krea-2/resolve/main/vae/qwen%5Fimage%5Fvae.safetensors
+    sha256: a70580f0213e67967ee9c95f05bb400e8fb08307e017a924bf3441223e023d1f
+    license: Krea 2 Community License (outputs commercial under $1M annual revenue)
+    commercial_images: "yes"
+    checked: "2026-10-13"
+
+  # Probe X3: Krea2 Coloring Book by sekoseko, trigger "s3c0m1x style coloring book, monochrome
+  # lineart illustration,". Trained on Krea 2 (standard/Raw), used here on Turbo. Civitai only,
+  # fetched with the project's own Civitai token. Page: https://civitai.com/models/2885885
+  # (version 3262188 "V1", file V1.safetensors, 223,231.35 KB)
+  # Selling images is allowed, but not without credit (allowNoCredit: false): a book with pages
+  # made with this LoRA must credit sekoseko as its creator.
+  - folder: loras
+    name: krea2-coloring-book.safetensors
+    url: https://civitai.com/api/download/models/3262188
+    sha256: 0a7cb0e0ca42be38c1a31b9fb4b1076a3b07331f63cc2357b09f4e63ff92271b
+    license: Civitai permissions (Image, RentCivit; credit required)
+    commercial_images: "yes"
+    checked: "2026-10-13"

@@ -3,3 +3,5 @@
 One line per set, newest last: `- P1 · <name> · <audience> · <YYYY-MM-DD> · <outcome>`.
 
 - X1 · First style probe: 3 profiles x 4 subjects · kids/adults/all ages/adults · 2026-10-12 · B (sdxl-ax) most detailed but rough (extra hand, muddiness); C (flux-coloring) near-blank on 2/4 subjects; A (sdxl-redmond) cleanest overall — notes in `lab/x1-notes.md`
+- X2 · Quality tags on sdxl-ax, and Krea 2 Turbo · kids/adults/all ages/adults · 2026-10-13 · Krea 2 Turbo "miles better" than SDXL, which is retired; K+Q (prose naming the coloring page + quality wording) taken forward; K-T (X1 tag prompts) came out in colour; B+Q still rough — notes in `lab/x2-notes.md`
+- X3 · Krea 2 Turbo + coloring-book LoRA at 0.6 and 1.0 · kids/adults/all ages/adults · 2026-10-13 · LoRA beats plain K+Q on finish (old town much less grey, larger closed mandala shapes, bolder lines), same compositions; 1.0 taken forward (krea2-turbo-coloring, credit sekoseko) — notes in `lab/x3-notes.md`

@@ -4,7 +4,10 @@ A workflow is ComfyUI's API export (`workflows/*.json`). The nodes the render st
 by their title (`_meta.title`), never by node id:
 
     ckpt       CheckpointLoaderSimple (ckpt_name) or UNETLoader (unet_name)
-    lora 1…n   LoraLoader, one per LoRA of the profile, in order
+    clip       CLIPLoader (clip_name); only when the profile sets a text encoder
+    vae        VAELoader (vae_name); only when the profile sets a VAE
+    lora 1…n   LoraLoader or LoraLoaderModelOnly, filled with the profile's LoRAs in order; a
+               node the profile has no LoRA for is dropped and its inputs linked through
     positive   CLIPTextEncode (text)
     negative   CLIPTextEncode (text); optional for workflows without one
     sampler    KSampler (seed, steps, cfg, sampler_name, scheduler)
@@ -62,6 +65,8 @@ class Profile(BaseModel):
 
     workflow: str
     checkpoint: str
+    text_encoder: str = ""
+    vae: str = ""
     loras: list[LoraSpec] = Field(default_factory=list[LoraSpec])
     prefix: str = ""
     sampler: str = "euler"
@@ -132,12 +137,33 @@ def needed(profile: Profile, workflow: Workflow) -> set[tuple[str, str]]:
     """Return the model files a render with this profile loads, as (ComfyUI folder, file name)."""
     ckpt = _inputs(workflow.graph, _titled(workflow.graph), "ckpt")
     folder = "diffusion_models" if "unet_name" in ckpt else "checkpoints"
-    return {(folder, profile.checkpoint)} | {("loras", lora.name) for lora in profile.loras}
+    files = {(folder, profile.checkpoint)} | {("loras", lora.name) for lora in profile.loras}
+    if profile.text_encoder:
+        files.add(("text_encoders", profile.text_encoder))
+    if profile.vae:
+        files.add(("vae", profile.vae))
+    return files
 
 
 def prompt_of(cell: Cell, profile: Profile) -> str:
     """Return the prompt as rendered: the profile's prefix (its trigger words), then the cell's."""
     return ", ".join(part for part in (profile.prefix.strip(), cell.prompt.strip()) if part)
+
+
+LORA_OUTPUTS = ("model", "clip")
+
+
+def _bypass(graph: Graph, node: str) -> None:
+    """Drop a LoRA node, linking whatever read its outputs to the model and CLIP it was fed."""
+    fed = cast("dict[str, object]", graph.pop(node)["inputs"])
+    for spec in graph.values():
+        inputs = cast("dict[str, object]", spec["inputs"])
+        for key, value in inputs.items():
+            match value:
+                case [str() as source, int() as slot] if source == node:
+                    inputs[key] = fed[LORA_OUTPUTS[slot]]
+                case _:
+                    pass
 
 
 def fill(workflow: Workflow, cell: Cell, profile: Profile) -> Graph:
@@ -146,13 +172,28 @@ def fill(workflow: Workflow, cell: Cell, profile: Profile) -> Graph:
     titles = _titled(graph)
     ckpt = _inputs(graph, titles, "ckpt")
     ckpt["unet_name" if "unet_name" in ckpt else "ckpt_name"] = profile.checkpoint
+    # A loader the profile leaves unset would load a file `needed` never checks.
+    loaders = (
+        ("clip", "clip_name", "text_encoder", profile.text_encoder),
+        ("vae", "vae_name", "vae", profile.vae),
+    )
+    for title, key, setting, name in loaders:
+        if (title in titles) != bool(name):
+            msg = f"a {title!r} node in the workflow needs the profile's {setting}, and vice versa"
+            raise ComfyError(msg)
+        if name:
+            _inputs(graph, titles, title)[key] = name
     lora_nodes = sorted(t for t in titles if t.startswith("lora "))
-    if len(lora_nodes) != len(profile.loras):
+    if len(lora_nodes) < len(profile.loras):
         msg = f"the workflow has {len(lora_nodes)} LoRA nodes, the profile {len(profile.loras)}"
         raise ComfyError(msg)
-    for title, lora in zip(lora_nodes, profile.loras, strict=True):
+    for title, lora in zip(lora_nodes, profile.loras, strict=False):
         inputs = _inputs(graph, titles, title)
-        inputs.update(lora_name=lora.name, strength_model=lora.weight, strength_clip=lora.weight)
+        inputs.update(lora_name=lora.name, strength_model=lora.weight)
+        if "strength_clip" in inputs:
+            inputs["strength_clip"] = lora.weight
+    for title in lora_nodes[len(profile.loras) :]:
+        _bypass(graph, titles[title])
     _inputs(graph, titles, "positive")["text"] = prompt_of(cell, profile)
     if "negative" in titles:
         _inputs(graph, titles, "negative")["text"] = cell.negative
@@ -189,6 +230,10 @@ def infotext(cell: Cell, name: str, profile: Profile, workflow: Workflow) -> str
         f"Size: {profile.width}x{profile.height}",
         f"Model: {Path(profile.checkpoint).stem}",
     ]
+    if profile.text_encoder:
+        settings.append(f"Text encoder: {Path(profile.text_encoder).stem}")
+    if profile.vae:
+        settings.append(f"VAE: {Path(profile.vae).stem}")
     if profile.loras:
         loras = " · ".join(f"{Path(lora.name).stem} @ {lora.weight:g}" for lora in profile.loras)
         settings.append(f"Loras: {loras}")
