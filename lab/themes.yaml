@@ -81,6 +81,7 @@ X9:
 X10:
   theme: outer space
   name: "Outer space"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 22, 11, 12]
   subjects:
     - [moonwalk, "an astronaut in a puffy spacesuit planting a flag on the moon, the open visor showing a young astronaut with short curly hair, with craters and moon rocks around and the round Earth on the horizon, the sky left white with outlined stars."]
     - [launch, "a tall rocket lifting off from a launch pad with big puffy outlined clouds of exhaust and a gantry tower, while a girl of about ten sitting on her father's shoulders and a grandmother with a sun visor watch from behind a fence."]
