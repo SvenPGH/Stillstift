@@ -135,6 +135,7 @@ X12:
 X13:
   theme: busy city
   name: "A busy city day"
+  picks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
   subjects:
     - [crossing, "a busy city crossing between tall buildings, where a crossing guard in his sixties with a grey moustache and a reflective vest holds up a round sign while a boy of about eight with a backpack and a cast on his arm, a tall teenage girl with headphones and a high bun, and a man in a suit with a briefcase cross the street."]
     - [bakery, "a corner bakery in the morning, where a baker with a long beard and a tall chef's hat slides loaves into the shop window, while a girl of about ten with two braids and a scooter presses her nose to the glass."]
