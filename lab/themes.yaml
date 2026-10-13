@@ -12,7 +12,7 @@ X6:
   picks: [1, 2, 15, 4, 17, 6, 19, 8, 9, 10, 11, 24]
   subjects:
     - [pumpkins, "a pumpkin patch on a farm, where a tall teenage boy with curly hair and a flannel shirt lifts a huge pumpkin into a wooden wagon while his little sister of about six with two puffs of hair and rain boots hugs a tiny pumpkin, with hay bales, a scarecrow and bare trees behind them."]
-    - [trickortreat, "a street of old houses with carved pumpkins on the steps, where a tall girl of about twelve with glasses in a wizard robe covered in stars, a small boy of about five in a dinosaur costume and a boy of about nine in a wheelchair dressed as a knight go trick-or-treating, and an elderly neighbour with a white bun and a cardigan holds out a bowl of sweets at her door."]
+    - [trickortreat, "a street of old houses with carved pumpkins drawn as plain white outlines on the steps, where a tall girl of about twelve with glasses in a wizard robe covered in stars, a small boy of about five in a dinosaur costume and a boy of about nine in a wheelchair dressed as a knight go trick-or-treating, and an elderly neighbour with a white bun and a cardigan holds out a bowl of sweets at her door."]
     - [hauntedhouse, "a friendly haunted house on a hill with crooked shutters and round windows, three smiling cartoon ghosts of different sizes floating around the chimney, outlined bats, a big white full moon and bare twisting trees."]
     - [witch, "a cosy witch's kitchen where a grandmotherly witch with a long grey braid, round spectacles and a patched pointy hat stirs a bubbling cauldron, while a white cat with a curled tail sits on a shelf among jars and spell books and a little owl watches from a broom."]
     - [party, "a costume party in a school hall with paper garlands, where a tall teenage boy with a buzz cut dressed as a robot, a girl of about ten with freckles and a long ponytail dressed as a pumpkin, and a father with a full beard dressed as a pirate bob for apples in a big tub."]
@@ -20,7 +20,7 @@ X6:
     - [teaparty, "a garden tea party at a round table, where a friendly furry monster with big round eyes, small horns and a striped scarf pours tea for a cheerful skeleton in a bow tie and a small mummy hugging a teddy bear, with cups, cupcakes and pumpkins on the table."]
     - [cats, "two cats drawn as white outlines, a big fluffy one and a small kitten, sitting on a stone garden wall between grinning jack-o'-lanterns, under a big white full moon with outlined bats and bare branches."]
     - [scarecrow, "a tall cheerful scarecrow with a patched hat, a stitched grin and a plaid shirt standing in a cornfield, with crows perched on its arms, a crooked wooden fence, pumpkins on the ground and a bare oak tree."]
-    - [sweetshop, "a Halloween sweet shop where a shopkeeper in her sixties with short silver hair, cat-eye glasses and an apron fills tall jars with candy corn and lollipops, while a tall teenage girl in a headscarf and a skeleton-print hoodie chooses a chocolate bar from a shelf."]
+    - [sweetshop, "a Halloween sweet shop where a shopkeeper in her sixties with short silver hair, cat-eye glasses and an apron fills tall jars with striped sweets and swirly lollipops, all drawn as plain white outlines, while a tall teenage girl in a headscarf and a skeleton-print hoodie chooses a chocolate bar from a shelf."]
     - [mandala, "a large symmetrical mandala made of pumpkins, bats, autumn leaves, wrapped candies, spider webs and stars arranged in radial symmetry, centered on the page."]
     - [lanternwalk, "a family walking along a lantern-lit path through a forest of bare twisting trees: a tall mother with a long braid and a cape carrying a paper lantern, a toddler riding on the shoulders of a father with a round beard and a vampire cape, and a fluffy spaniel in a pumpkin costume."]
 
@@ -45,7 +45,7 @@ X8:
   theme: under-the-sea
   name: "Under the sea"
   subjects:
-    - [reef, "a coral reef where a teenage diver with a long braid, a wetsuit and a mask photographs a huge old sea turtle, while clownfish hide in an anemone and a small seahorse holds on to seaweed."]
+    - [reef, "a coral reef where a teenage diver with a long braid, a wetsuit and a mask photographs a huge old sea turtle, while small striped fish drawn as plain white outlines hide in an anemone and a small seahorse holds on to seaweed."]
     - [octopus, "a curious octopus with long curling tentacles arranging shells in front of its rocky cave, with starfish, scallops and a crab with big claws on the sandy sea floor."]
     - [shipwreck, "an old wooden shipwreck on the sea floor covered in seaweed and barnacles, with an open wooden treasure box spilling coins, an eel peeking out of a round porthole left white inside and a school of small fish swimming around the broken mast."]
     - [whales, "a big humpback whale and her small calf swimming side by side, both drawn as white outlines with long grooved throats, with bubbles, rays of sunlight drawn as lines and seagulls on the waves above."]
@@ -119,7 +119,7 @@ X12:
     - [monkeys, "a family of monkeys swinging through jungle vines and big leaves, a sloth hanging upside down nearby and a toucan with a huge beak on a branch."]
     - [tiger, "a tiger crouching by a jungle river among ferns and lotus flowers, its stripes drawn as closed outlined bands left white inside, with a kingfisher on a branch above."]
     - [gorillas, "a big gorilla sitting calmly in a clearing, a young gorilla climbing on his back and another gorilla holding a baby, with banana plants around them."]
-    - [parrots, "a jungle tree full of parrots and macaws with long tail feathers, tree frogs with big round eyes on the leaves, orchids and hanging vines."]
+    - [parrots, "a jungle tree full of parrots and macaws with long tail feathers, all drawn as plain white outlines, tree frogs with big round eyes on the leaves, orchids and hanging vines."]
     - [rhino, "a big rhinoceros with two horns grazing on the savanna, with oxpecker birds on its back, a family of warthogs trotting past and a baobab tree."]
     - [camp, "an explorer camp in the jungle with a tent and a hammock, where a botanist in her fifties with a long grey braid and a pith helmet sketches a giant flower, and a teenage boy with a buzz cut and cargo shorts looks at a beetle through a magnifying glass."]
     - [river, "a river with a hippo yawning wide, a crocodile basking on the bank and egrets standing in the shallow water, with reeds and palms along the shore."]
