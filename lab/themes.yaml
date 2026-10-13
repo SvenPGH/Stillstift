@@ -99,6 +99,7 @@ X10:
 X11:
   theme: fairy-tale
   name: "Fairy-tale castle and knights"
+  picks: [1, 2, 3, 16, 5, 6, 7, 8, 9, 10, 11, 12]
   subjects:
     - [castle, "a grand fairy-tale castle on a hill with tall towers and flags, its drawbridge raised above a moat with swans, and a winding road with a horse and cart."]
     - [dragon, "a young knight of about fifteen with a bowl haircut and a helmet slightly too big offering an apple to a friendly dragon with big wings and a curly tail, in a meadow of flowers."]
