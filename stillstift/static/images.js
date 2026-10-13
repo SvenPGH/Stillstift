@@ -15,6 +15,7 @@ import { watchChanges } from "./live.js";
 import { FLAWS } from "./rating.js";
 import { overviewSection, tileStars } from "./overview.js";
 import { mountShell } from "./shell.js";
+import { wireSwipe } from "./swipe.js";
 import { renderViewer, viewerUi, wireViewer } from "./viewer.js";
 
 /** @typedef {import("./images-view.js").CellRow} CellRow */
@@ -276,6 +277,7 @@ function wire() {
     render();
   };
   wireViewer(viewer, { close });
+  wireSwipe(viewer.body, stepViewer);
 
   document.addEventListener("keydown", (event) => {
     if (state.viewing === null) return;

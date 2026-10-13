@@ -62,6 +62,12 @@
         <div class="img-pane">
           <div id="frame" class="frame">
             <img id="image" alt="" draggable="false" />
+            <button
+              id="zoom"
+              class="zoom"
+              type="button"
+              aria-label="Open full size"
+            ></button>
             <div class="img-label mono">
               <span id="img-code" class="img-code"></span>
               <span id="img-size"></span>
@@ -174,7 +180,25 @@
 
     <div class="floating">
       <div id="note" class="note" role="status" hidden></div>
-      <button id="submit" class="submit" type="button" hidden></button>
+      <div id="dock" class="dock">
+        <button
+          id="dock-prev"
+          class="dock-step"
+          type="button"
+          aria-label="Previous cell"
+        >
+          ‹
+        </button>
+        <button id="submit" class="submit" type="button" hidden></button>
+        <button
+          id="dock-next"
+          class="dock-step"
+          type="button"
+          aria-label="Next cell"
+        >
+          ›
+        </button>
+      </div>
     </div>
   </body>
 </html>

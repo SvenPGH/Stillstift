@@ -680,6 +680,7 @@ a:hover {
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--s1);
+  touch-action: pan-y pinch-zoom;
 }
 
 .frame img {
@@ -691,7 +692,18 @@ a:hover {
   transition: filter 160ms;
 }
 
+.zoom {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
 .img-label {
+  pointer-events: none;
   position: absolute;
   left: 12px;
   bottom: 10px;
@@ -1296,6 +1308,15 @@ a:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
+.dock {
+  display: flex;
+  gap: 8px;
+}
+
+.dock-step {
+  display: none;
+}
+
 .submit {
   pointer-events: auto;
   display: flex;
@@ -1688,7 +1709,7 @@ body.viewing {
   justify-content: center;
   min-height: 0;
   padding: 0 56px 16px;
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
 }
 
 .lb-single {
@@ -2343,4 +2364,260 @@ tfoot .cal-head {
 
 .lab-images:hover {
   color: var(--text);
+}
+
+/* Phones: one page fills the screen, the rating controls get thumb-sized, and stepping and
+   submitting sit in a dock at the bottom. */
+
+@media (max-width: 700px) {
+  .hdr-row {
+    position: relative;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .hdr-row:has(.context) {
+    flex-wrap: wrap;
+  }
+
+  .nav,
+  .actions,
+  .picker {
+    position: static;
+  }
+
+  .nav-btn {
+    padding: 0 6px;
+  }
+
+  .nav-label,
+  .progress,
+  .launcher-key,
+  .launcher-foot {
+    display: none;
+  }
+
+  .picker {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .picker-btn {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .picker-sub {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .context {
+    order: 5;
+    flex-basis: 100%;
+  }
+
+  .launcher,
+  .actions-list,
+  .picker-list {
+    top: calc(100% - 2px);
+    left: 8px;
+    right: 8px;
+    width: auto;
+    min-width: 0;
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+  }
+
+  .launcher {
+    padding: 12px;
+  }
+
+  .launcher-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .launcher-card {
+    min-height: 64px;
+    padding: 10px 12px;
+  }
+
+  .launcher-desc {
+    font-size: 12px;
+  }
+
+  .segments {
+    padding: 0 8px 2px;
+  }
+
+  .filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 8px 8px;
+    scrollbar-width: none;
+  }
+
+  .filter-row > * {
+    flex: none;
+  }
+
+  .popover {
+    right: 8px;
+    width: calc(100% - 16px);
+    max-height: calc(100dvh - 120px);
+    padding: 16px;
+  }
+
+  .img-pane {
+    padding: 8px 8px 0;
+  }
+
+  .frame {
+    width: min(100%, calc((100dvh - 180px) * 0.75));
+  }
+
+  .rows-pane {
+    padding: 12px 12px 120px;
+  }
+
+  .step-row {
+    flex-wrap: nowrap;
+    margin-bottom: 8px;
+  }
+
+  .step-row .step-btn {
+    display: none;
+  }
+
+  .intent {
+    padding-bottom: 12px;
+  }
+
+  .intent-line {
+    font-size: 17px;
+  }
+
+  .star-row {
+    gap: 4px;
+    min-height: 52px;
+  }
+
+  .star-label {
+    width: 88px;
+  }
+
+  .star-btns {
+    flex: 1;
+    max-width: 280px;
+  }
+
+  .star {
+    flex: 1;
+    width: auto;
+    height: 52px;
+    font-size: 28px;
+    line-height: 52px;
+  }
+
+  .star-value {
+    min-width: 12px;
+  }
+
+  .tri-label {
+    width: 88px;
+  }
+
+  .seg3 {
+    flex: 1;
+    max-width: 280px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .opt {
+    min-height: 44px;
+  }
+
+  .grid-view,
+  .overview,
+  .dash-main {
+    padding: 16px 8px 120px;
+  }
+
+  .tiles {
+    gap: 16px 8px;
+  }
+
+  .floating {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    align-items: stretch;
+    max-width: none;
+  }
+
+  .note {
+    max-width: none;
+    margin: 0 8px;
+  }
+
+  .dock {
+    pointer-events: auto;
+    padding: 8px 8px max(8px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--hdr);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .dock-step {
+    display: block;
+    flex: none;
+    width: 60px;
+    min-height: 56px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line2);
+    background: var(--s1);
+    color: var(--text);
+    font-size: 28px;
+  }
+
+  .dock-step:disabled {
+    opacity: 0.35;
+  }
+
+  .submit {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+    min-height: 56px;
+    padding: 0 12px;
+    box-shadow: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .viewer-body.stepped {
+    padding: 64px 8px 96px;
+  }
+
+  .lb-stage {
+    padding-bottom: 84px;
+  }
+
+  .lb-nav {
+    top: auto;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: 64px;
+    height: 56px;
+    margin-top: 0;
+  }
+
+  .lb-nav.prev {
+    left: 8px;
+  }
+
+  .lb-nav.next {
+    right: 8px;
+  }
 }

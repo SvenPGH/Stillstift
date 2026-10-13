@@ -30,7 +30,8 @@ function renderNav(host, page, state, rerender) {
   });
   toggle.ariaHasPopup = "menu";
   toggle.ariaExpanded = String(state.open);
-  toggle.append(dots, el("span", "", page));
+  toggle.ariaLabel = `${page}: pages`;
+  toggle.append(dots, el("span", "nav-label", page));
   host.replaceChildren(toggle);
   if (!state.open) return;
   const panel = el("div", "launcher");
