@@ -45,6 +45,7 @@ X7:
 X8:
   theme: under-the-sea
   name: "Under the sea"
+  picks: [13, 2, 3, 4, 5, 6, 7, 8, 9, 10, 23, 12]
   subjects:
     - [reef, "a coral reef where a teenage diver with a long braid, a wetsuit and a mask photographs a huge old sea turtle, while small striped fish drawn as plain white outlines hide in an anemone and a small seahorse holds on to seaweed."]
     - [octopus, "a curious octopus with long curling tentacles arranging shells in front of its rocky cave, with starfish, scallops and a crab with big claws on the sandy sea floor."]
