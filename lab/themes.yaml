@@ -98,7 +98,7 @@ X11:
   theme: fairy-tale
   name: "Fairy-tale castle and knights"
   subjects:
-    - [castle, "a grand fairy-tale castle on a hill with tall towers and flags, a drawbridge over a moat with swans, and a winding road with a horse and cart."]
+    - [castle, "a grand fairy-tale castle on a hill with tall towers and flags, its drawbridge raised above a moat with swans, and a winding road with a horse and cart."]
     - [dragon, "a young knight of about fifteen with a bowl haircut and a helmet slightly too big offering an apple to a friendly dragon with big wings and a curly tail, in a meadow of flowers."]
     - [joust, "a jousting tournament with two knights on armoured horses charging toward each other, pennants and banners on the stands, and a king with a long white beard and a crown watching from his seat."]
     - [library, "a castle library full of books and candles, where a queen in her seventies with a long grey braid, a crown and a fur-trimmed cloak reads a story to a small prince of about five with curly hair."]
@@ -137,7 +137,7 @@ X13:
     - [subway, "a subway carriage where a young father with a beard and a baby carrier holds the pole, a teenage boy with curly hair and a skateboard reads a comic, and an elderly passenger with a cane and a flowered headscarf sits by the window."]
     - [foodtruck, "a city park with a food truck selling tacos, where a cook with a shaved head and an apron hands a plate to a tall teenage girl with a ponytail and a sports jersey, with pigeons, benches and trees around."]
     - [construction, "a construction site with a tall crane, scaffolding and a cement mixer, where a builder with a hard hat and a long braid drives a digger, while a boy of about seven and his grandfather in a flat cap watch through the fence."]
-    - [firestation, "a fire station with a big fire engine pulling out of its open door, a tall firefighter with a moustache and a younger firefighter with a short ponytail in helmets, and a spotted Dalmatian sitting proudly on the step."]
+    - [firestation, "a fire station with a big fire engine parked on the street in front of it, a tall firefighter with a moustache and a younger firefighter with a short ponytail in helmets, and a spotted Dalmatian sitting proudly on the step."]
     - [library, "a city library with tall bookshelves and big arched windows, where a librarian with short grey hair and a cardigan hands a book to a boy of about nine in a wheelchair, while a teenager with dreadlocks reads in a beanbag."]
     - [rooftop, "a rooftop garden among skyscrapers with raised beds of tomatoes and sunflowers, where a grandfather in a white turban waters the plants and a girl of about six with short bangs feeds hens in a little coop."]
     - [square, "a city square with a fountain, where a street musician with long silver hair plays the violin, an older couple dances, pigeons fly up and a boy on roller skates zooms past."]
