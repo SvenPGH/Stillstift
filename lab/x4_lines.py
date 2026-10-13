@@ -122,6 +122,30 @@ SUBJECTS = (
 SEEDS = (201, 301)
 PROFILE = "krea2-turbo-coloring"
 
+# Cells 25-28: the two subjects first drawn too young for the set, reworded with more background,
+# each at two new seeds. (short name, subject sentence, seeds), in cell order.
+RERENDERS = (
+    (
+        "snowmen",
+        (
+            "a snowman family of three building a fourth snowman in a snowy village garden, with "
+            "a wooden fence hung with icicles, a garden shed, a bird house on a post, fir trees "
+            "and a wooden sled leaning on the fence, and snow-covered rooftops behind them."
+        ),
+        (404, 504),
+    ),
+    (
+        "polarbear",
+        (
+            "a polar bear and a penguin wrapping presents together on the ice in front of an "
+            "igloo, with ribbons, bows, rolls of wrapping paper and a pile of gifts, snow-covered "
+            "ice blocks around them, a fishing hole with a little fish, and a starry sky full of "
+            "snowflakes above."
+        ),
+        (412, 512),
+    ),
+)
+
 
 def line(subject: str, seed: int) -> str:
     prompt = STYLE.format(subject=subject)
@@ -132,8 +156,9 @@ def line(subject: str, seed: int) -> str:
 
 
 def lines() -> list[str]:
-    """Cells 01-12 are the subjects at seed 201+n, 13-24 the same subjects at 301+n."""
-    return [line(text, base + n) for base in SEEDS for n, (_, text) in enumerate(SUBJECTS)]
+    """Cells 01-12 are the subjects at seed 201+n, 13-24 the same at 301+n, 25-28 RERENDERS."""
+    first = [line(text, base + n) for base in SEEDS for n, (_, text) in enumerate(SUBJECTS)]
+    return first + [line(text, seed) for _, text, seeds in RERENDERS for seed in seeds]
 
 
 def main(argv: list[str]) -> int:
