@@ -1,6 +1,12 @@
 import { api, button, el } from "./dom.js";
 import { litDot, pageForKey, pageGroups } from "./nav.js";
-import { mountRaterPicker, saveRater, savedRater } from "./raters.js";
+import {
+  loadRaters,
+  mountRaterPicker,
+  raterUrl,
+  saveRater,
+  savedRater,
+} from "./raters.js";
 import { applySavedTheme, mountThemeToggle } from "./theme.js";
 
 /** @typedef {import("./nav.js").PageName} PageName */
@@ -166,7 +172,11 @@ function renderActions(
  *   onRaterChange?: (rater: string) => void,
  *   onRatersLoaded?: () => void,
  * }} at
- * @returns {{ render: () => void, currentRater: () => string | null }}
+ * @returns {{
+ *   render: () => void,
+ *   currentRater: () => string | null,
+ *   raterUrl: (url: string) => Promise<string>,
+ * }}
  */
 export function mountShell({
   nav,
@@ -179,27 +189,23 @@ export function mountShell({
   applySavedTheme();
   const navState = { open: false };
   const actionsState = { open: false };
-  /** @type {{ raters: readonly string[] }} */
-  const raterState = { raters: [] };
+  const raters = loadRaters(
+    async () => /** @type {string[]} */ (await api("/api/raters")),
+    localStorage,
+  );
   const render = () => {
     renderNav(nav, page, navState, render);
     renderActions(actions, page, actionsState, {
       model: model(),
       rerender: render,
-      raters: raterState.raters,
+      raters: raters.known(),
       onRaterChange,
     });
   };
-  async function loadRaters() {
-    try {
-      raterState.raters = /** @type {string[]} */ (await api("/api/raters"));
-    } catch {
-      raterState.raters = [];
-    }
+  void raters.ready.then(() => {
     render();
     onRatersLoaded?.();
-  }
-  void loadRaters();
+  });
   document.addEventListener(
     "click",
     (event) => {
@@ -226,6 +232,7 @@ export function mountShell({
   render();
   return {
     render,
-    currentRater: () => savedRater(localStorage, raterState.raters),
+    currentRater: raters.current,
+    raterUrl: (url) => raterUrl(raters, url),
   };
 }

@@ -31,6 +31,7 @@ import {
   triRows,
 } from "./rate-ui.js";
 import { watchChanges } from "./live.js";
+import { withRater } from "./raters.js";
 import { mountShell } from "./shell.js";
 import {
   draftKey,
@@ -162,14 +163,6 @@ function rater() {
   return shell.currentRater();
 }
 
-/** @param {string} url */
-function withRater(url) {
-  const picked = rater();
-  if (picked === null) return url;
-  const join = url.includes("?") ? "&" : "?";
-  return `${url}${join}rater=${encodeURIComponent(picked)}`;
-}
-
 function summary() {
   return state.entries.find((e) => e.entry === state.entry) ?? null;
 }
@@ -205,7 +198,7 @@ function edit(change) {
 
 async function loadEntries() {
   state.entries = /** @type {EntrySummary[]} */ (
-    await api(withRater("/api/entries"))
+    await api(await shell.raterUrl("/api/entries"))
   );
 }
 
@@ -226,7 +219,7 @@ function stepCell(delta) {
 
 /** @param {string} entry */
 async function loadCells(entry) {
-  const url = withRater(`${entryUrl(entry)}/cells`);
+  const url = await shell.raterUrl(`${entryUrl(entry)}/cells`);
   state.cells = /** @type {CellView[]} */ (await api(url));
 }
 
@@ -322,7 +315,7 @@ async function submit() {
   state.status = "saving";
   render();
   try {
-    await api(withRater(ratingUrl(state.entry, cell.cell_id)), {
+    await api(withRater(ratingUrl(state.entry, cell.cell_id), rater()), {
       method: "POST",
       ...json(body),
     });
@@ -365,7 +358,7 @@ async function saveFavorite() {
   state.gridStatus = "saving";
   render();
   try {
-    await api(withRater(`${entryUrl(state.entry)}/favorite`), {
+    await api(withRater(`${entryUrl(state.entry)}/favorite`, rater()), {
       method: "PUT",
       ...json({ cell: favorite }),
     });
@@ -395,7 +388,7 @@ async function undo() {
   let removed;
   try {
     removed = /** @type {Rating} */ (
-      await api(withRater(ratingUrl(last.entry, last.cell)), {
+      await api(withRater(ratingUrl(last.entry, last.cell), rater()), {
         method: "DELETE",
       })
     );
