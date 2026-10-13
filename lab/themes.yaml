@@ -117,12 +117,13 @@ X11:
 X12:
   theme: jungle and safari
   name: "Jungle and safari"
+  picks: [1, 2, 3, 4, 17, 6, 7, 8, 21, 10, 11, 12]
   subjects:
     - [elephants, "a big old elephant with long tusks and a baby elephant splashing at a waterhole, with zebras and a giraffe drinking at the edge and acacia trees behind."]
     - [lions, "a lion with a big shaggy mane resting on a rock, two lionesses lying in the grass and three playful cubs tumbling over each other."]
     - [jeep, "a safari jeep with an open roof, where a tall guide with a beard and a wide hat points at giraffes, a girl of about eleven with braces and a cap takes photos, and her grandmother with short silver hair looks through binoculars."]
     - [monkeys, "a family of monkeys swinging through jungle vines and big leaves, a sloth hanging upside down nearby and a toucan with a huge beak on a branch."]
-    - [tiger, "a tiger crouching by a jungle river among ferns and lotus flowers, its stripes drawn as closed outlined bands left white inside, with a kingfisher on a branch above."]
+    - [tiger, "a white tiger crouching by a jungle river among ferns and lotus flowers, its coat left white with only a few thin outlined stripes, with a kingfisher on a branch above."]
     - [gorillas, "a big gorilla sitting calmly in a clearing, a young gorilla climbing on his back and another gorilla holding a baby, with banana plants around them."]
     - [parrots, "a jungle tree full of parrots and macaws with long tail feathers, all drawn as plain white outlines, tree frogs with big round eyes on the leaves, orchids and hanging vines."]
     - [rhino, "a big rhinoceros with two horns grazing on the savanna, with oxpecker birds on its back, a family of warthogs trotting past and a baobab tree."]

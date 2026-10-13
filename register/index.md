@@ -13,3 +13,4 @@ One line per set, newest last: `- P1 · <name> · <audience> · <YYYY-MM-DD> · 
 - X9 · Dinosaurs · ages 9–15 · 2026-10-13 · No tint, first seed good on every subject; skull sockets and afro puffs fill black on some pages — notes in `lab/x9-notes.md`
 - X10 · Outer space · ages 9–15 · 2026-10-13 · White sky with outlined stars held on every page; casts as written; one visor filled black — notes in `lab/x10-notes.md`
 - X11 · Fairy-tale castle and knights · ages 9–15 · 2026-10-13 · Casts as written; one cloak lining tinted pink; raised drawbridge kept the gate white — notes in `lab/x11-notes.md`
+- X12 · Jungle and safari · ages 9–15 · 2026-10-13 · No tint, casts as written; tiger and zebra stripes solid black, one tent opening black — notes in `lab/x12-notes.md`
