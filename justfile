@@ -50,6 +50,6 @@ lab kind name *args:
 score entry:
     uv run python -m stillstift.score {{entry}}
 
-# One labelled contact sheet of a set's cells: data/sheets/<entry>.png.
+# One labelled contact sheet of a set's cells: <STILLSTIFT_DATA>/sheets/<entry>.png.
 sheet entry:
     uv run python -m stillstift.sheet {{entry}}

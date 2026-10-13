@@ -26,6 +26,9 @@ The curator shares one basic-auth login between its raters; `STILLSTIFT_RATERS` 
 e.g. `Sven,Anna`) names who is rating, picked in the header and remembered per browser. Every
 rating, favorite and the like is kept per rater, so the same page can hold one of each.
 
+The store (SQLite file, renders, sheets) lives in `STILLSTIFT_DATA`, `D:\Stillstift\data` by
+default: outside any checkout, so every worktree renders into and rates from the same sets.
+
 ## Commands (justfile)
 
 | command | what it does |
