@@ -9,6 +9,8 @@ two raters, and (eventually) assembles the keepers into a print-ready interior P
   rate, favorite, export (`stillstift/static/*` is its plain-JS/HTML/CSS frontend).
 - `stillstift/register.py`, `score.py`, `scoring.py`, `sheet.py`, `sync.py`, `lab.py` — the
   register of sets (`register/*.csv`), recall scoring, contact sheets, and experiment/test sets.
+- `stillstift/frame.py` — the Advent book's day frame laid over a page's art, set in Fredoka
+  (`stillstift/fonts/`, SIL Open Font License).
 - `stillstift/models.py` — downloads only the models listed in `models.yaml`, checked by SHA-256.
 
 ## Setup
@@ -41,6 +43,7 @@ default: outside any checkout, so every worktree renders into and rates from the
 | `just lab <kind> <name> ...` | create an experiment (`X`) or a test (`T`) set |
 | `just score <entry>` | write a set's ratings to `register/predictions.csv`, print recall |
 | `just sheet <entry>` | one labelled contact sheet of a set's cells |
+| `just frame <art> <day> <out>` | lay a page's art into the Advent book's day frame (8.5x11 in, 300 dpi) |
 
 Docker: `docker compose up` runs the curator against `Dockerfile`/`docker-compose.yml`; it needs
 `uv.lock` and the `.env` values above.
