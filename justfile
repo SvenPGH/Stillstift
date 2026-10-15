@@ -50,6 +50,11 @@ lab kind name *args:
 score entry:
     uv run python -m stillstift.score {{entry}}
 
+# Lay a page's art into the Advent book's day frame, 8.5x11 in at 300 dpi: just frame <art.png> <day> <out.png> [--side verso].
+[positional-arguments]
+frame *args:
+    uv run python -m stillstift.frame "$@"
+
 # One labelled contact sheet of a set's cells: <STILLSTIFT_DATA>/sheets/<entry>.png.
 sheet entry:
     uv run python -m stillstift.sheet {{entry}}
